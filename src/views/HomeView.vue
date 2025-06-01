@@ -97,7 +97,6 @@ const handleRegister = async (data: {
 </script>
 
 <style scoped>
-/* Estilos responsivos */
 @media (max-width: 768px) {
   :deep(.n-button) {
     width: 100%;

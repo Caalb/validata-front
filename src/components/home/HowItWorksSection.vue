@@ -87,7 +87,6 @@ import { NCard, NIcon, NText, NSpace, NImage } from 'naive-ui'
 </script>
 
 <style scoped>
-/* Estilos responsivos */
 @media (max-width: 768px) {
   :deep(.n-card) {
     margin-bottom: 16px;

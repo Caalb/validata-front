@@ -194,7 +194,6 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-/* Estilos responsivos */
 @media (max-width: 768px) {
   :deep(.n-form-item) {
     margin-bottom: 16px;

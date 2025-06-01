@@ -93,7 +93,6 @@ import { NGrid, NGridItem, NCard, NIcon, NText } from 'naive-ui'
 </script>
 
 <style scoped>
-/* Estilos responsivos */
 @media (max-width: 768px) {
   :deep(.n-card) {
     margin-bottom: 16px;
