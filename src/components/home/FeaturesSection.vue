@@ -70,26 +70,6 @@
               </n-text>
             </n-card>
           </n-grid-item>
-
-          <n-grid-item :span="24" :sm="12" :md="12">
-            <n-card class="h-full shadow-sm hover:shadow-md transition-shadow duration-200">
-              <template #header>
-                <div class="flex items-center">
-                  <n-icon size="24" class="text-primary mr-2">
-                    <i class="fas fa-truck"></i>
-                  </n-icon>
-                  <n-text class="text-lg md:text-xl font-medium"
-                    >Integração com Fornecedores</n-text
-                  >
-                </div>
-              </template>
-
-              <n-text class="text-base md:text-lg text-gray-500">
-                Conecte-se diretamente com seus fornecedores para otimizar pedidos e reduzir o tempo
-                de reposição de estoque.
-              </n-text>
-            </n-card>
-          </n-grid-item>
         </n-grid>
       </div>
     </div>
