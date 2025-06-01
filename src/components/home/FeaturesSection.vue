@@ -76,15 +76,17 @@
               <template #header>
                 <div class="flex items-center">
                   <n-icon size="24" class="text-primary mr-2">
-                    <i class="fas fa-mobile-alt"></i>
+                    <i class="fas fa-truck"></i>
                   </n-icon>
-                  <n-text class="text-lg md:text-xl font-medium">Aplicativo Móvel</n-text>
+                  <n-text class="text-lg md:text-xl font-medium"
+                    >Integração com Fornecedores</n-text
+                  >
                 </div>
               </template>
 
               <n-text class="text-base md:text-lg text-gray-500">
-                Acesse todas as funcionalidades de qualquer lugar através do nosso aplicativo para
-                smartphones.
+                Conecte-se diretamente com seus fornecedores para otimizar pedidos e reduzir o tempo
+                de reposição de estoque.
               </n-text>
             </n-card>
           </n-grid-item>
