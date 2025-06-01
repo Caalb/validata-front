@@ -37,6 +37,7 @@
     >
       <n-drawer-content title="Menu" closable>
         <n-menu :options="menuOptions" :collapsed-width="64" :collapsed-icon-size="22" />
+
         <div class="mt-4 px-4">
           <n-button block @click="handleAuthClick"> Entrar / Cadastrar </n-button>
         </div>

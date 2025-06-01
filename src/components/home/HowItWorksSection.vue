@@ -5,6 +5,7 @@
         <n-text class="text-base font-semibold tracking-wide uppercase text-primary">
           Como funciona
         </n-text>
+
         <h2 class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
           Transforme sua gestão em 3 passos simples
         </h2>
@@ -31,9 +32,11 @@
                       <n-icon size="24" class="text-primary mr-2">
                         <i class="fas fa-1"></i>
                       </n-icon>
+
                       <n-text class="text-xl md:text-2xl font-bold">Cadastre seus produtos</n-text>
                     </div>
                   </template>
+
                   <n-text class="text-base md:text-lg text-gray-500">
                     Registre todos os produtos do seu estoque incluindo informações como data de
                     validade, quantidade e preço.
@@ -46,11 +49,13 @@
                       <n-icon size="24" class="text-primary mr-2">
                         <i class="fas fa-2"></i>
                       </n-icon>
+
                       <n-text class="text-xl md:text-2xl font-bold"
                         >Receba alertas inteligentes</n-text
                       >
                     </div>
                   </template>
+
                   <n-text class="text-base md:text-lg text-gray-500">
                     Nosso sistema avisa quando produtos estão próximos do vencimento e sugere ações
                     como promoções ou reposição.
@@ -63,11 +68,13 @@
                       <n-icon size="24" class="text-primary mr-2">
                         <i class="fas fa-3"></i>
                       </n-icon>
+
                       <n-text class="text-xl md:text-2xl font-bold"
                         >Reduza o desperdício e aumente lucros</n-text
                       >
                     </div>
                   </template>
+
                   <n-text class="text-base md:text-lg text-gray-500">
                     Com menos produtos vencidos e mais vendas, você reduz desperdícios e aumenta sua
                     margem de lucro.

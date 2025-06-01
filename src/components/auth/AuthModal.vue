@@ -47,14 +47,6 @@
         />
       </n-form-item>
 
-      <n-form-item v-if="!isLoginView" path="businessType" label="Tipo de negócio">
-        <n-select
-          v-model:value="formValue.businessType"
-          :options="businessOptions"
-          placeholder="Selecione o tipo de negócio"
-        />
-      </n-form-item>
-
       <div v-if="isLoginView" class="flex items-center justify-between mb-4">
         <n-checkbox v-model:checked="rememberMe">Lembrar de mim</n-checkbox>
         <n-button text type="default" size="small">Esqueceu sua senha?</n-button>
@@ -90,6 +82,9 @@
 import { ref, computed } from 'vue'
 import { useMessage } from 'naive-ui'
 import type { FormInst, FormRules } from 'naive-ui'
+import { useRouter } from 'vue-router'
+import { authService } from '@/services/auth.service'
+import type { AxiosError } from 'axios'
 
 interface Props {
   show: boolean
@@ -105,12 +100,12 @@ interface RegisterData {
   name: string
   email: string
   password: string
-  businessType: string
 }
 
 defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+const router = useRouter()
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)
 const isLoginView = ref(true)
@@ -121,15 +116,7 @@ const formValue = ref({
   name: '',
   email: '',
   password: '',
-  businessType: '',
 })
-
-const businessOptions = [
-  { label: 'Padaria', value: 'bakery' },
-  { label: 'Mercearia', value: 'grocery' },
-  { label: 'Minimercado', value: 'market' },
-  { label: 'Outro', value: 'other' },
-]
 
 const rules = computed<FormRules>(() => ({
   name: [
@@ -147,13 +134,6 @@ const rules = computed<FormRules>(() => ({
     { required: true, message: 'Por favor, digite sua senha', trigger: 'blur' },
     { min: 6, message: 'A senha deve ter pelo menos 6 caracteres', trigger: 'blur' },
   ],
-  businessType: [
-    {
-      required: !isLoginView.value,
-      message: 'Por favor, selecione o tipo de negócio',
-      trigger: 'change',
-    },
-  ],
 }))
 
 const toggleAuthView = () => {
@@ -162,7 +142,6 @@ const toggleAuthView = () => {
     name: '',
     email: '',
     password: '',
-    businessType: '',
   }
 }
 
@@ -174,21 +153,34 @@ const handleSubmit = async () => {
     await formRef.value.validate()
 
     if (isLoginView.value) {
-      emit('login', {
+      const response = await authService.login({
         email: formValue.value.email,
         password: formValue.value.password,
-        rememberMe: rememberMe.value,
       })
+
+      localStorage.setItem('token', response.access_token)
+      localStorage.setItem('user', JSON.stringify(response.user))
+
+      message.success('Login realizado com sucesso!')
+      router.push('/app')
     } else {
-      emit('register', formValue.value as RegisterData)
+      const response = await authService.register({
+        name: formValue.value.name,
+        email: formValue.value.email,
+        password: formValue.value.password,
+      })
+
+      localStorage.setItem('token', response.access_token)
+      localStorage.setItem('user', JSON.stringify(response.user))
+
+      message.success('Cadastro realizado com sucesso!')
+      router.push('/app')
     }
 
     emit('update:show', false)
-    message.success(
-      isLoginView.value ? 'Login realizado com sucesso!' : 'Cadastro realizado com sucesso!',
-    )
-  } catch {
-    message.error('Por favor, verifique os campos do formulário')
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message: string }>
+    message.error(axiosError.response?.data?.message || 'Erro ao realizar operação')
   } finally {
     loading.value = false
   }
