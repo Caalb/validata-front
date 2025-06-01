@@ -11,8 +11,8 @@
   >
     <template #header>
       <div class="text-center">
-        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary-100">
-          <i class="fas fa-user-lock text-primary-600"></i>
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100">
+          <i class="fas fa-user-lock text-primary"></i>
         </div>
         <h3 class="mt-3 text-lg font-medium text-gray-900">
           {{ isLoginView ? 'Acesse sua conta' : 'Crie sua conta' }}
@@ -58,7 +58,7 @@
         <n-button text type="default" size="small">Esqueceu sua senha?</n-button>
       </div>
 
-      <n-button type="primary" attr-type="submit" block :loading="loading">
+      <n-button attr-type="submit" block :loading="loading">
         {{ isLoginView ? 'Entrar' : 'Cadastrar' }}
       </n-button>
     </n-form>
@@ -194,19 +194,10 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-.bg-primary-100 {
-  background-color: var(--primary-color-100);
-}
-
-.text-primary-600 {
-  color: var(--primary-color-600);
-}
-
-.bg-primary-600 {
-  background-color: var(--primary-color-600);
-}
-
-.hover\:bg-primary-700:hover {
-  background-color: var(--primary-color-700);
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  :deep(.n-form-item) {
+    margin-bottom: 16px;
+  }
 }
 </style>

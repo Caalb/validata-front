@@ -2,7 +2,7 @@
   <div id="features" class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="lg:text-center">
-        <n-text class="text-base font-semibold tracking-wide uppercase text-primary-600">
+        <n-text class="text-base font-semibold tracking-wide uppercase text-primary">
           Recursos
         </n-text>
         <h2 class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
@@ -19,7 +19,7 @@
             <n-card class="h-full shadow-sm hover:shadow-md transition-shadow duration-200">
               <template #header>
                 <div class="flex items-center">
-                  <n-icon size="24" class="text-primary-500 mr-2">
+                  <n-icon size="24" class="text-primary mr-2">
                     <i class="fas fa-barcode"></i>
                   </n-icon>
                   <n-text class="text-lg md:text-xl font-medium">Controle de Validade</n-text>
@@ -36,7 +36,7 @@
             <n-card class="h-full shadow-sm hover:shadow-md transition-shadow duration-200">
               <template #header>
                 <div class="flex items-center">
-                  <n-icon size="24" class="text-primary-500 mr-2">
+                  <n-icon size="24" class="text-primary mr-2">
                     <i class="fas fa-tags"></i>
                   </n-icon>
                   <n-text class="text-lg md:text-xl font-medium">Precificação Dinâmica</n-text>
@@ -53,7 +53,7 @@
             <n-card class="h-full shadow-sm hover:shadow-md transition-shadow duration-200">
               <template #header>
                 <div class="flex items-center">
-                  <n-icon size="24" class="text-primary-500 mr-2">
+                  <n-icon size="24" class="text-primary mr-2">
                     <i class="fas fa-chart-line"></i>
                   </n-icon>
                   <n-text class="text-lg md:text-xl font-medium">Relatórios Inteligentes</n-text>
@@ -70,7 +70,7 @@
             <n-card class="h-full shadow-sm hover:shadow-md transition-shadow duration-200">
               <template #header>
                 <div class="flex items-center">
-                  <n-icon size="24" class="text-primary-500 mr-2">
+                  <n-icon size="24" class="text-primary mr-2">
                     <i class="fas fa-mobile-alt"></i>
                   </n-icon>
                   <n-text class="text-lg md:text-xl font-medium">Aplicativo Móvel</n-text>
@@ -93,14 +93,6 @@ import { NGrid, NGridItem, NCard, NIcon, NText } from 'naive-ui'
 </script>
 
 <style scoped>
-.text-primary-500 {
-  color: var(--primary-color-500);
-}
-
-.text-primary-600 {
-  color: var(--primary-color-600);
-}
-
 /* Estilos responsivos */
 @media (max-width: 768px) {
   :deep(.n-card) {

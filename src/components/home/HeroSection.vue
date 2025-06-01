@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gradient-to-r from-primary-50 to-secondary-50">
+  <div class="bg-primary-50">
     <div
       class="max-w-7xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between"
     >
@@ -7,8 +7,8 @@
         <h1
           class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl"
         >
-          <span class="block text-primary-800">Reduza o desperdício,</span>
-          <span class="block text-secondary-600 mt-2">aumente seus lucros</span>
+          <span class="block text-primary">Reduza o desperdício,</span>
+          <span class="block text-gray-600 mt-2">aumente seus lucros</span>
         </h1>
         <p
           class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0"
@@ -19,18 +19,13 @@
         <div
           class="mt-8 flex flex-col sm:flex-row sm:justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4"
         >
-          <n-button
-            type="default"
-            size="large"
-            class="bg-primary-600 text-white hover:bg-primary-700 w-full sm:w-auto"
-            @click="$emit('show-auth')"
-          >
+          <n-button size="large" class="w-full sm:w-auto" @click="$emit('show-auth')">
             Comece agora
           </n-button>
           <n-button
             type="default"
             size="large"
-            class="bg-white text-primary-600 hover:bg-primary-50 w-full sm:w-auto"
+            class="w-full sm:w-auto"
             @click="$emit('scroll-to', 'how-it-works')"
           >
             Saiba mais
@@ -60,19 +55,10 @@ defineEmits<{
 </script>
 
 <style scoped>
-.bg-primary-50 {
-  background-color: var(--primary-color-50);
-}
-
-.bg-secondary-50 {
-  background-color: var(--secondary-color-50);
-}
-
-.text-primary-800 {
-  color: var(--primary-color-800);
-}
-
-.text-secondary-600 {
-  color: var(--secondary-color-600);
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  :deep(.n-button) {
+    width: 100%;
+  }
 }
 </style>

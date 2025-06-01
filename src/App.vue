@@ -26,6 +26,6 @@ html {
 }
 
 body {
-  @apply bg-gray-50 font-sans;
+  @apply bg-primary-50 font-sans;
 }
 </style>

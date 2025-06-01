@@ -2,7 +2,7 @@
   <div id="testimonials" class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="lg:text-center">
-        <n-text class="text-base font-semibold tracking-wide uppercase text-primary-600">
+        <n-text class="text-base font-semibold tracking-wide uppercase text-primary">
           Depoimentos
         </n-text>
         <h2 class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
@@ -18,15 +18,11 @@
                 <div class="flex items-center">
                   <n-avatar
                     round
-                    :style="{ backgroundColor: 'var(--primary-color-500)' }"
                     class="mr-2"
-                  >
-                    <template #icon>
-                      <n-icon>
-                        <i :class="testimonial.icon"></i>
-                      </n-icon>
-                    </template>
-                  </n-avatar>
+                    :render-icon="
+                      () => h(NIcon, null, { default: () => h('i', { class: testimonial.icon }) })
+                    "
+                  />
                   <div>
                     <n-text class="text-lg font-medium">{{ testimonial.name }}</n-text>
                     <n-text class="text-sm text-gray-500">{{ testimonial.role }}</n-text>
@@ -45,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+import { h } from 'vue'
 import { NGrid, NGridItem, NCard, NIcon, NText, NAvatar } from 'naive-ui'
 
 const testimonials = [
@@ -73,7 +70,10 @@ const testimonials = [
 </script>
 
 <style scoped>
-.text-primary-600 {
-  color: var(--primary-color-600);
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  :deep(.n-card) {
+    margin-bottom: 16px;
+  }
 }
 </style>
