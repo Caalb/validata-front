@@ -81,12 +81,7 @@ const handleLogin = async (credentials: { email: string; password: string }) => 
   }
 }
 
-const handleRegister = async (data: {
-  name: string
-  email: string
-  password: string
-  businessType: string
-}) => {
+const handleRegister = async (data: { name: string; email: string; password: string }) => {
   try {
     console.log('Register attempt:', data)
     message.success('Cadastro realizado com sucesso!')

@@ -75,12 +75,7 @@ const handleLogin = async (credentials: {
   }
 }
 
-const handleRegister = async (data: {
-  name: string
-  email: string
-  password: string
-  businessType: string
-}) => {
+const handleRegister = async (data: { name: string; email: string; password: string }) => {
   try {
     console.log('Registration attempt with:', data)
     // Implementar lógica de registro aqui
