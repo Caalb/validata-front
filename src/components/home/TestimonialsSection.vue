@@ -5,6 +5,7 @@
         <n-text class="text-base font-semibold tracking-wide uppercase text-primary">
           Depoimentos
         </n-text>
+
         <h2 class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
           O que nossos clientes dizem
         </h2>
@@ -23,12 +24,14 @@
                       () => h(NIcon, null, { default: () => h('i', { class: testimonial.icon }) })
                     "
                   />
+
                   <div>
                     <n-text class="text-lg font-medium">{{ testimonial.name }}</n-text>
                     <n-text class="text-sm text-gray-500">{{ testimonial.role }}</n-text>
                   </div>
                 </div>
               </template>
+
               <n-text class="text-gray-500">
                 {{ testimonial.content }}
               </n-text>
@@ -70,7 +73,6 @@ const testimonials = [
 </script>
 
 <style scoped>
-/* Estilos responsivos */
 @media (max-width: 768px) {
   :deep(.n-card) {
     margin-bottom: 16px;

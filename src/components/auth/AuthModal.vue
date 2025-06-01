@@ -14,9 +14,11 @@
         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100">
           <i class="fas fa-user-lock text-primary"></i>
         </div>
+
         <h3 class="mt-3 text-lg font-medium text-gray-900">
           {{ isLoginView ? 'Acesse sua conta' : 'Crie sua conta' }}
         </h3>
+
         <p class="mt-2 text-sm text-gray-500">
           {{
             isLoginView

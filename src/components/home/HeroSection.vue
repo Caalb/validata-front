@@ -4,9 +4,7 @@
       class="max-w-7xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between"
     >
       <div class="lg:w-1/2 text-center lg:text-left">
-        <h1
-          class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl"
-        >
+        <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
           <span class="block text-primary">Reduza o desperdício,</span>
           <span class="block text-gray-600 mt-2">aumente seus lucros</span>
         </h1>
@@ -55,7 +53,6 @@ defineEmits<{
 </script>
 
 <style scoped>
-/* Estilos responsivos */
 @media (max-width: 768px) {
   :deep(.n-button) {
     width: 100%;

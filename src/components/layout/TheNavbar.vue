@@ -117,7 +117,6 @@ function renderIcon(icon: string) {
 </script>
 
 <style scoped>
-/* Estilos para o drawer mobile */
 :deep(.n-drawer-content) {
   padding: 0;
 }

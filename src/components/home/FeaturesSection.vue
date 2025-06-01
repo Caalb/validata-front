@@ -107,7 +107,6 @@ import { NGrid, NGridItem, NCard, NIcon, NText } from 'naive-ui'
   }
 }
 
-/* Ajustes para telas muito pequenas */
 @media (max-width: 640px) {
   :deep(.n-grid) {
     margin: 0 -8px;
