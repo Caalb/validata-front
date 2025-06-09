@@ -15,6 +15,7 @@ import { NButton } from 'naive-ui'
 import Quagga, { type QuaggaResult } from 'quagga'
 
 const emit = defineEmits(['barcode-detected', 'close'])
+
 const isScanning = ref(false)
 
 const startScanner = async () => {

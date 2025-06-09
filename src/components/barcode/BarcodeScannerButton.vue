@@ -1,6 +1,6 @@
 <template>
   <div>
-    <n-button @click="showScanner = true" type="primary"> Cadastrar produto </n-button>
+    <n-button @click="showScanner = true">Cadastrar produto </n-button>
 
     <barcode-scanner
       v-if="showScanner"
