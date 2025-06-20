@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { NButton } from 'naive-ui'
-import Quagga, { type QuaggaResult } from 'quagga'
+import Quagga, { type QuaggaJSResultObject } from '@ericblade/quagga2'
 
 const emit = defineEmits(['barcode-detected', 'close'])
 
@@ -61,8 +61,7 @@ const startScanner = async () => {
       },
     )
 
-    const detectionHandler = (result: QuaggaResult) => {
-      console.log(result)
+    const detectionHandler = (result: QuaggaJSResultObject) => {
       if (result.codeResult.code) {
         emit('barcode-detected', result.codeResult.code)
         Quagga.stop()
@@ -80,7 +79,7 @@ const startScanner = async () => {
 
 const stopScanner = () => {
   try {
-    if (Quagga.isRunning) {
+    if (Quagga.CameraAccess.getActiveStreamLabel()) {
       Quagga.stop()
     }
   } catch (error) {
