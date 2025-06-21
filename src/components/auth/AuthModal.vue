@@ -131,10 +131,13 @@
                     :pt="{
                       input: {
                         class:
-                          'w-full pl-3 md:pl-4 pr-10 md:pr-12 py-2.5 md:py-3 text-sm md:text-base rounded-xl md:rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
+                          'w-full pl-3 md:pl-4 pr-10 md:pr-12 py-2.5 md:py-3 text-sm md:text-base rounded-xl md:rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300 flex-1',
                       },
                     }"
-                    :inputClass="{ 'border-danger-300 bg-danger-50/50': passwordError }"
+                    :inputClass="{
+                      'border-danger-300 bg-danger-50/50': passwordError,
+                      'flex-1': true,
+                    }"
                   />
                   <div
                     v-if="passwordError"
@@ -220,16 +223,16 @@
               style="animation-delay: 0.7s"
             >
               <div class="grid grid-cols-3 gap-2 md:gap-4 text-center">
-                <div class="text-center">
-                  <i class="pi pi-shield-check text-accent-500 text-base md:text-lg mb-1 block"></i>
+                <div class="text-center flex justify-center items-center gap-1">
+                  <i class="pi pi-shield-check text-accent-500 text-base md:text-lg block"></i>
                   <span class="text-xs text-gray-500">Seguro</span>
                 </div>
-                <div class="text-center">
-                  <i class="pi pi-clock text-secondary-500 text-base md:text-lg mb-1 block"></i>
+                <div class="text-center flex justify-center items-center gap-1">
+                  <i class="pi pi-clock text-secondary-500 text-base md:text-lg block"></i>
                   <span class="text-xs text-gray-500">Rápido</span>
                 </div>
-                <div class="text-center">
-                  <i class="pi pi-star-fill text-yellow-500 text-base md:text-lg mb-1 block"></i>
+                <div class="text-center flex justify-center items-center gap-1">
+                  <i class="pi pi-star-fill text-yellow-500 text-base md:text-lg block"></i>
                   <span class="text-xs text-gray-500">Confiável</span>
                 </div>
               </div>
