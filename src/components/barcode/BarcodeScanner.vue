@@ -3,7 +3,9 @@
     <div v-if="isScanning" class="scanner-container">
       <div id="interactive" class="viewport"></div>
       <div class="scanner-controls">
-        <n-button @click="stopScanner" type="error" size="large"> Fechar Scanner </n-button>
+        <Button @click="stopScanner" severity="danger" size="large" icon="pi pi-times">
+          Fechar Scanner
+        </Button>
       </div>
     </div>
   </div>
@@ -11,7 +13,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { NButton } from 'naive-ui'
+import Button from 'primevue/button'
 import Quagga, { type QuaggaJSResultObject } from '@ericblade/quagga2'
 
 const emit = defineEmits(['barcode-detected', 'close'])
@@ -63,7 +65,8 @@ const startScanner = async () => {
 
     const detectionHandler = (result: QuaggaJSResultObject) => {
       if (result.codeResult.code) {
-        emit('barcode-detected', result.codeResult.code)
+        const format = result.codeResult.format || 'EAN_13'
+        emit('barcode-detected', { code: result.codeResult.code, format })
         Quagga.stop()
         stopScanner()
       }
@@ -109,7 +112,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 1000;
+  z-index: 2000;
   display: flex;
   justify-content: center;
   align-items: center;
