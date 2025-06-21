@@ -1,8 +1,8 @@
 <template>
-  <Dialog 
-    :visible="visible" 
-    :modal="true" 
-    :closable="true" 
+  <Dialog
+    :visible="visible"
+    :modal="true"
+    :closable="true"
     :draggable="false"
     :style="{ width: '500px', zIndex: 1000 }"
     @update:visible="$emit('update:visible', $event)"
@@ -17,7 +17,6 @@
     </template>
 
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <!-- Barcode Code -->
       <div class="field">
         <label for="barcodeCode" class="block text-sm font-medium text-gray-700 mb-2">
           Código de Barras *
@@ -43,7 +42,6 @@
         <small v-if="errors.barcodeCode" class="p-error">{{ errors.barcodeCode }}</small>
       </div>
 
-      <!-- Barcode Format -->
       <div class="field">
         <label for="barcodeFormat" class="block text-sm font-medium text-gray-700 mb-2">
           Formato do Código *
@@ -61,13 +59,11 @@
         <small v-if="errors.barcodeFormat" class="p-error">{{ errors.barcodeFormat }}</small>
       </div>
 
-      <!-- Loading spinner for barcode verification -->
       <div v-if="barcodeLoading" class="text-center py-4">
         <ProgressSpinner style="width: 30px; height: 30px" stroke-width="4" />
         <p class="text-sm text-gray-500 mt-2">Verificando produto...</p>
       </div>
 
-      <!-- Product Name -->
       <div class="field">
         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
           Nome do Produto *
@@ -83,11 +79,8 @@
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
       </div>
 
-      <!-- Brand -->
       <div class="field">
-        <label for="brand" class="block text-sm font-medium text-gray-700 mb-2">
-          Marca *
-        </label>
+        <label for="brand" class="block text-sm font-medium text-gray-700 mb-2"> Marca * </label>
         <InputText
           id="brand"
           v-model="formData.brand"
@@ -99,7 +92,6 @@
         <small v-if="errors.brand" class="p-error">{{ errors.brand }}</small>
       </div>
 
-      <!-- Quantity -->
       <div class="field">
         <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">
           Quantidade *
@@ -117,7 +109,6 @@
         <small v-if="errors.quantity" class="p-error">{{ errors.quantity }}</small>
       </div>
 
-      <!-- Expiration Date -->
       <div class="field">
         <label for="expirationDate" class="block text-sm font-medium text-gray-700 mb-2">
           Data de Validade *
@@ -136,26 +127,21 @@
         <small v-if="errors.expirationDate" class="p-error">{{ errors.expirationDate }}</small>
       </div>
 
-      <!-- Success message for existing product -->
-      <Message 
-        v-if="productExists" 
-        severity="success" 
-        class="mb-4"
-        icon="pi pi-check-circle"
-      >
-        Produto encontrado! Dados preenchidos automaticamente. Ajuste a quantidade e data de validade conforme necessário.
+      <Message v-if="productExists" severity="success" class="mb-4" icon="pi pi-check-circle">
+        Produto encontrado! Dados preenchidos automaticamente. Ajuste a quantidade e data de
+        validade conforme necessário.
       </Message>
     </form>
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <Button 
-          label="Cancelar" 
-          severity="secondary" 
+        <Button
+          label="Cancelar"
+          severity="secondary"
           @click="$emit('update:visible', false)"
           :disabled="loading"
         />
-        <Button 
+        <Button
           :label="isEdit ? 'Atualizar' : 'Cadastrar'"
           :loading="loading"
           @click="handleSubmit"
@@ -187,8 +173,8 @@ interface Props {
 
 interface Emits {
   'update:visible': [value: boolean]
-  'productSaved': [product: Product]
-  'openBarcodeScanner': []
+  productSaved: [product: Product]
+  openBarcodeScanner: []
 }
 
 const props = defineProps<Props>()
@@ -202,7 +188,7 @@ const formData = ref({
   name: '',
   brand: '',
   quantity: 1,
-  expirationDate: null as Date | null
+  expirationDate: null as Date | null,
 })
 
 const errors = ref<Record<string, string>>({})
@@ -216,7 +202,7 @@ const barcodeFormats = [
   { label: 'UPC-A', value: 'UPC_A' },
   { label: 'UPC-E', value: 'UPC_E' },
   { label: 'Code 128', value: 'CODE_128' },
-  { label: 'Code 39', value: 'CODE_39' }
+  { label: 'Code 39', value: 'CODE_39' },
 ]
 
 const isEdit = computed(() => !!props.product)
@@ -228,7 +214,7 @@ const resetForm = () => {
     name: '',
     brand: '',
     quantity: 1,
-    expirationDate: null
+    expirationDate: null,
   }
   errors.value = {}
   productExists.value = false
@@ -241,7 +227,7 @@ const populateForm = (product: Product) => {
     name: product.name,
     brand: product.brand,
     quantity: product.quantity,
-    expirationDate: new Date(product.expirationDate)
+    expirationDate: new Date(product.expirationDate),
   }
 }
 
@@ -279,7 +265,7 @@ const handleSubmit = async () => {
   if (!validateForm()) return
 
   loading.value = true
-  
+
   try {
     const productData = {
       barcodeCode: formData.value.barcodeCode,
@@ -287,7 +273,7 @@ const handleSubmit = async () => {
       name: formData.value.name,
       brand: formData.value.brand,
       quantity: formData.value.quantity,
-      expirationDate: formData.value.expirationDate!.toISOString().split('T')[0]
+      expirationDate: formData.value.expirationDate!.toISOString().split('T')[0],
     }
 
     let savedProduct: Product
@@ -295,14 +281,14 @@ const handleSubmit = async () => {
     if (isEdit.value && props.product) {
       const updateData: ProductUpdateRequest = {
         id: props.product.id,
-        ...productData
+        ...productData,
       }
       savedProduct = await productService.updateProduct(updateData)
       toast.add({
         severity: 'success',
         summary: 'Sucesso',
         detail: 'Produto atualizado com sucesso',
-        life: 3000
+        life: 3000,
       })
     } else {
       savedProduct = await productService.createProduct(productData as ProductCreateRequest)
@@ -310,7 +296,7 @@ const handleSubmit = async () => {
         severity: 'success',
         summary: 'Sucesso',
         detail: 'Produto cadastrado com sucesso',
-        life: 3000
+        life: 3000,
       })
     }
 
@@ -321,7 +307,7 @@ const handleSubmit = async () => {
       severity: 'error',
       summary: 'Erro',
       detail: isEdit.value ? 'Erro ao atualizar produto' : 'Erro ao cadastrar produto',
-      life: 3000
+      life: 3000,
     })
   } finally {
     loading.value = false
@@ -336,7 +322,7 @@ const verifyBarcode = async (barcodeCode: string) => {
 
   try {
     const response = await productService.verifyBarcode(barcodeCode)
-    
+
     if (response.exists && response.product) {
       productExists.value = true
       formData.value.name = response.product.name
@@ -348,14 +334,13 @@ const verifyBarcode = async (barcodeCode: string) => {
       severity: 'error',
       summary: 'Erro',
       detail: 'Erro ao verificar código de barras',
-      life: 3000
+      life: 3000,
     })
   } finally {
     barcodeLoading.value = false
   }
 }
 
-// Funcção para ser chamada externamente quando um código for escaneado
 const setBarcodeCode = (code: string, format: string = 'EAN_13') => {
   formData.value.barcodeCode = code
   formData.value.barcodeFormat = format
@@ -363,21 +348,25 @@ const setBarcodeCode = (code: string, format: string = 'EAN_13') => {
 }
 
 defineExpose({ setBarcodeCode })
-
-// Watchers
-watch(() => props.visible, (newValue) => {
-  if (newValue) {
-    if (props.product) {
-      populateForm(props.product)
-    } else {
-      resetForm()
+watch(
+  () => props.visible,
+  (newValue) => {
+    if (newValue) {
+      if (props.product) {
+        populateForm(props.product)
+      } else {
+        resetForm()
+      }
     }
-  }
-})
+  },
+)
 
-watch(() => formData.value.barcodeCode, (newCode) => {
-  if (newCode && newCode.length >= 8) {
-    verifyBarcode(newCode)
-  }
-})
+watch(
+  () => formData.value.barcodeCode,
+  (newCode) => {
+    if (newCode && newCode.length >= 8) {
+      verifyBarcode(newCode)
+    }
+  },
+)
 </script>

@@ -1,6 +1,5 @@
 import type { Product, ProductCreateRequest, ProductUpdateRequest, BarcodeVerificationResponse } from '@/types/product'
 
-// Mock data para simulação
 const mockProducts: Product[] = [
   {
     id: '1',
@@ -59,12 +58,11 @@ const mockProducts: Product[] = [
   }
 ]
 
-// Simulação de delay de rede
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const productService = {
   async getProducts(page: number = 1, limit: number = 10): Promise<{ products: Product[], total: number }> {
-    await delay(500) // Simula chamada à API
+    await delay(500)
     
     const startIndex = (page - 1) * limit
     const endIndex = startIndex + limit
@@ -84,7 +82,7 @@ export const productService = {
   },
 
   async verifyBarcode(barcodeCode: string): Promise<BarcodeVerificationResponse> {
-    await delay(800) // Simula verificação mais lenta
+    await delay(800)
     
     const existingProduct = mockProducts.find(p => p.barcodeCode === barcodeCode)
     

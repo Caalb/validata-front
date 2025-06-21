@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ProductsTable 
+    <ProductsTable
       ref="productsTableRef"
       @open-create-modal="openCreateModal"
       @edit-product="openEditModal"
@@ -66,11 +66,11 @@ const closeBarcodeScanner = () => {
 
 const handleBarcodeDetected = (event: BarcodeDetectedEvent) => {
   showBarcodeScanner.value = false
-  
+
   // Abrir modal de produto e definir o código de barras
   selectedProduct.value = null
   showProductModal.value = true
-  
+
   // Aguardar próximo tick para garantir que o modal está montado
   nextTick(() => {
     if (productModalRef.value) {

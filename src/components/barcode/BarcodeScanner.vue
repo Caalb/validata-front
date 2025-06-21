@@ -184,7 +184,6 @@ onUnmounted(() => {
   justify-content: space-between;
 }
 
-/* Header */
 .scanner-header {
   text-align: center;
   color: white;
@@ -208,7 +207,6 @@ onUnmounted(() => {
   font-weight: 400;
 }
 
-/* Scanner Viewport */
 .scanner-viewport {
   position: relative;
   width: 100%;
@@ -226,7 +224,6 @@ onUnmounted(() => {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
-/* Scanning Overlay */
 .scanning-overlay {
   position: absolute;
   top: 0;
@@ -237,7 +234,6 @@ onUnmounted(() => {
   z-index: 5;
 }
 
-/* Corner Markers */
 .corner-marker {
   position: absolute;
   width: 30px;
@@ -278,7 +274,6 @@ onUnmounted(() => {
   animation: pulse-corner 2s infinite 1.5s;
 }
 
-/* Focus Area */
 .focus-area {
   position: absolute;
   top: 50%;
@@ -296,7 +291,6 @@ onUnmounted(() => {
   animation: focus-glow 2s infinite alternate;
 }
 
-/* Scanning Line */
 .scan-line {
   position: absolute;
   top: 50%;
@@ -309,7 +303,6 @@ onUnmounted(() => {
   box-shadow: 0 0 10px #ef4444;
 }
 
-/* Instructions */
 .scanner-instructions {
   display: flex;
   flex-direction: column;
@@ -335,7 +328,6 @@ onUnmounted(() => {
   font-size: 1.1rem;
 }
 
-/* Controls */
 .scanner-controls {
   display: flex;
   justify-content: center;
@@ -368,7 +360,6 @@ onUnmounted(() => {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2), 0 15px 40px rgba(239, 68, 68, 0.4) !important;
 }
 
-/* Animations */
 @keyframes scan-move {
   0% {
     transform: translate(-50%, -50%) translateY(-75px);
@@ -409,7 +400,6 @@ onUnmounted(() => {
   }
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 480px) {
   .scanner-container {
     max-width: 100%;

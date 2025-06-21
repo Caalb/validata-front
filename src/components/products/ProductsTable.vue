@@ -22,78 +22,87 @@
             tableStyle="min-width: 50rem"
             class="p-datatable-gridlines"
           >
-          <Column field="name" header="Nome" style="min-width: 200px">
-            <template #body="{ data }">
-              <div class="flex items-center gap-3">
-                <i class="pi pi-box text-blue-500"></i>
-                <span class="font-semibold text-gray-900">{{ data.name }}</span>
+            <Column field="name" header="Nome" style="min-width: 200px">
+              <template #body="{ data }">
+                <div class="flex items-center gap-3">
+                  <i class="pi pi-box text-blue-500"></i>
+                  <span class="font-semibold text-gray-900">{{ data.name }}</span>
+                </div>
+              </template>
+            </Column>
+
+            <Column field="brand" header="Marca" style="min-width: 150px">
+              <template #body="{ data }">
+                <Tag :value="data.brand" severity="info" class="font-medium" />
+              </template>
+            </Column>
+
+            <Column field="quantity" header="Quantidade" style="min-width: 120px">
+              <template #body="{ data }">
+                <div class="flex items-center gap-2">
+                  <Badge
+                    :value="data.quantity"
+                    :severity="
+                      data.quantity <= 2 ? 'danger' : data.quantity <= 5 ? 'warning' : 'success'
+                    "
+                    size="large"
+                  />
+                  <small class="text-gray-500">unid.</small>
+                </div>
+              </template>
+            </Column>
+
+            <Column field="expirationDate" header="Data de Validade" style="min-width: 150px">
+              <template #body="{ data }">
+                <div class="flex items-center gap-2">
+                  <i
+                    class="pi pi-calendar"
+                    :class="getExpirationIconClass(data.expirationDate)"
+                  ></i>
+                  <span :class="getExpirationDateClass(data.expirationDate)" class="font-medium">
+                    {{ formatDate(data.expirationDate) }}
+                  </span>
+                </div>
+              </template>
+            </Column>
+
+            <Column header="Ações" :exportable="false" style="min-width: 100px">
+              <template #body="{ data }">
+                <div class="flex justify-center">
+                  <Button
+                    icon="pi pi-pencil"
+                    severity="info"
+                    size="small"
+                    outlined
+                    rounded
+                    @click="$emit('editProduct', data)"
+                    v-tooltip.top="'Editar produto'"
+                    class="hover:bg-blue-50"
+                  />
+                </div>
+              </template>
+            </Column>
+
+            <template #empty>
+              <div v-if="!loading" class="text-center py-12">
+                <div
+                  class="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="pi pi-inbox text-3xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Nenhum produto encontrado</h3>
+                <p class="text-gray-500 text-sm max-w-sm mx-auto">
+                  Cadastre seu primeiro produto usando o botão "Cadastrar Produto" acima para
+                  começar.
+                </p>
               </div>
             </template>
-          </Column>
-
-          <Column field="brand" header="Marca" style="min-width: 150px">
-            <template #body="{ data }">
-              <Tag :value="data.brand" severity="info" class="font-medium" />
-            </template>
-          </Column>
-
-          <Column field="quantity" header="Quantidade" style="min-width: 120px">
-            <template #body="{ data }">
-              <div class="flex items-center gap-2">
-                <Badge
-                  :value="data.quantity"
-                  :severity="data.quantity <= 2 ? 'danger' : data.quantity <= 5 ? 'warning' : 'success'"
-                  size="large"
-                />
-                <small class="text-gray-500">unid.</small>
-              </div>
-            </template>
-          </Column>
-
-          <Column field="expirationDate" header="Data de Validade" style="min-width: 150px">
-            <template #body="{ data }">
-              <div class="flex items-center gap-2">
-                <i class="pi pi-calendar" :class="getExpirationIconClass(data.expirationDate)"></i>
-                <span :class="getExpirationDateClass(data.expirationDate)" class="font-medium">
-                  {{ formatDate(data.expirationDate) }}
-                </span>
-              </div>
-            </template>
-          </Column>
-
-          <Column header="Ações" :exportable="false" style="min-width: 100px">
-            <template #body="{ data }">
-              <div class="flex justify-center">
-                <Button
-                  icon="pi pi-pencil"
-                  severity="info"
-                  size="small"
-                  outlined
-                  rounded
-                  @click="$emit('editProduct', data)"
-                  v-tooltip.top="'Editar produto'"
-                  class="hover:bg-blue-50"
-                />
-              </div>
-            </template>
-          </Column>
-
-          <template #empty>
-            <div v-if="!loading" class="text-center py-12">
-              <div class="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                <i class="pi pi-inbox text-3xl text-gray-400"></i>
-              </div>
-              <h3 class="text-lg font-semibold text-gray-700 mb-2">Nenhum produto encontrado</h3>
-              <p class="text-gray-500 text-sm max-w-sm mx-auto">
-                Cadastre seu primeiro produto usando o botão "Cadastrar Produto" acima para começar.
-              </p>
-            </div>
-          </template>
-
           </DataTable>
-          
-          <!-- Loading overlay quando está carregando -->
-          <div v-if="loading" class="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center rounded-lg z-10">
+
+          <div
+            v-if="loading"
+            class="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center rounded-lg z-10"
+          >
             <div class="text-center">
               <ProgressSpinner style="width: 50px; height: 50px" stroke-width="4" />
               <p class="text-gray-600 mt-3 font-medium">Carregando produtos...</p>
@@ -131,7 +140,7 @@ const loading = ref(false)
 const loadProducts = async () => {
   loading.value = true
   try {
-    const response = await productService.getProducts(1, 1000) // Carrega todos os produtos
+    const response = await productService.getProducts(1, 1000)
     products.value = response.products
   } catch {
     toast.add({
@@ -157,13 +166,13 @@ const getExpirationDateClass = (dateString: string) => {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
   if (diffDays < 0) {
-    return 'text-red-600 font-bold' // Vencido
+    return 'text-red-600 font-bold'
   } else if (diffDays <= 7) {
-    return 'text-orange-500 font-semibold' // Vence em 7 dias
+    return 'text-orange-500 font-semibold'
   } else if (diffDays <= 30) {
-    return 'text-yellow-600 font-medium' // Vence em 30 dias
+    return 'text-yellow-600 font-medium'
   }
-  return 'text-green-600' // Válido
+  return 'text-green-600'
 }
 
 const getExpirationIconClass = (dateString: string) => {
@@ -173,13 +182,13 @@ const getExpirationIconClass = (dateString: string) => {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
   if (diffDays < 0) {
-    return 'text-red-600' // Vencido
+    return 'text-red-600'
   } else if (diffDays <= 7) {
-    return 'text-orange-500' // Vence em 7 dias
+    return 'text-orange-500'
   } else if (diffDays <= 30) {
-    return 'text-yellow-600' // Vence em 30 dias
+    return 'text-yellow-600'
   }
-  return 'text-green-600' // Válido
+  return 'text-green-600'
 }
 
 const refreshTable = () => {
