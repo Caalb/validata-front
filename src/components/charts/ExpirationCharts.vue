@@ -1,84 +1,104 @@
 <template>
-  <div class="expiration-charts">
-    <!-- Week Filter at Top -->
-    <Card class="mb-6">
-      <template #header>
-        <div class="p-4 pb-0">
-          <h2 class="text-xl font-bold text-gray-800">Análise de Vencimentos</h2>
-          <p class="text-gray-600 text-sm">
+  <div class="relative">
+    <div class="absolute top-0 right-1/3 w-72 h-72 bg-primary-100/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 left-1/3 w-64 h-64 bg-secondary-100/15 rounded-full blur-2xl"></div>
+    
+    <div class="relative z-10 space-y-8">
+      <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">Análise de Vencimentos</h2>
+          <p class="text-gray-600">
             Selecione o período para visualizar produtos com validade próxima
           </p>
         </div>
-      </template>
-      <template #content>
-        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div class="flex-1">
-            <label class="block text-sm font-medium text-gray-700 mb-2"> Período de Análise </label>
-            <Dropdown
-              v-model="selectedWeek"
-              :options="weekOptions"
-              option-label="label"
-              placeholder="Selecione uma semana"
-              class="w-full sm:w-80"
-            />
-            <div v-if="analytics?.weekRange" class="text-xs text-gray-500 mt-1">
-              {{ analytics.weekRange.start.toLocaleDateString('pt-BR') }} até
-              {{ analytics.weekRange.end.toLocaleDateString('pt-BR') }}
+
+        <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+          <div class="flex-1 space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="pi pi-calendar mr-2 text-primary-500"></i>
+                Período de Análise
+              </label>
+              <Dropdown
+                v-model="selectedWeek"
+                :options="weekOptions"
+                option-label="label"
+                placeholder="Selecione uma semana"
+                class="w-full lg:w-80"
+                :pt="{
+                  root: 'w-full',
+                  input: 'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300'
+                }"
+              />
+              <div v-if="analytics?.weekRange" class="text-xs text-gray-500 mt-2 ml-6">
+                {{ analytics.weekRange.start.toLocaleDateString('pt-BR') }} até
+                {{ analytics.weekRange.end.toLocaleDateString('pt-BR') }}
+              </div>
             </div>
           </div>
 
-          <div class="flex gap-2">
+          <div class="flex gap-3">
             <Button
               icon="pi pi-refresh"
               label="Atualizar"
-              size="small"
-              outlined
               @click="refreshData"
               :loading="loading"
+              class="px-4 py-2 bg-gradient-to-r from-secondary-500 to-accent-500 hover:from-secondary-600 hover:to-accent-600 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
             />
           </div>
         </div>
-      </template>
-    </Card>
+      </div>
 
-    <!-- Summary Card -->
-    <Card class="mb-6">
-      <template #content>
-        <div class="text-center">
-          <div v-if="loading" class="flex items-center justify-center py-8">
-            <ProgressSpinner />
-            <span class="ml-2 text-gray-600">Carregando dados...</span>
-          </div>
-          <div v-else-if="analytics">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <!-- Total Products Expiring -->
-              <div class="bg-blue-50 p-4 rounded-lg">
-                <div class="text-2xl font-bold text-blue-600">
-                  {{ analytics.productsExpiringThisWeek.length }}
+      <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+        <div v-if="loading" class="flex items-center justify-center py-12">
+          <ProgressSpinner style="width: 50px; height: 50px" stroke-width="4" />
+          <span class="ml-3 text-gray-600 font-medium">Carregando dados...</span>
+        </div>
+        <div v-else-if="analytics">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div class="absolute inset-0 bg-gradient-to-br from-primary-50/50 to-primary-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i class="pi pi-clock text-white text-xl"></i>
+                  </div>
                 </div>
-                <div class="text-sm text-gray-600">Produtos vencendo no período</div>
-              </div>
-
-              <!-- Total Quantity -->
-              <div class="bg-orange-50 p-4 rounded-lg">
-                <div class="text-2xl font-bold text-orange-600">
-                  {{ analytics.totalQuantityExpiring }}
-                </div>
-                <div class="text-sm text-gray-600">Unidades no total</div>
-              </div>
-
-              <!-- Urgent Products -->
-              <div class="bg-red-50 p-4 rounded-lg">
-                <div class="text-2xl font-bold text-red-600">
-                  {{ analytics.urgentProducts.length }}
-                </div>
-                <div class="text-sm text-gray-600">Produtos urgentes (hoje/amanhã)</div>
+                <h3 class="text-2xl font-bold text-primary-600 mb-1">{{ analytics.productsExpiringThisWeek.length }}</h3>
+                <p class="text-sm text-gray-600">Produtos vencendo no período</p>
               </div>
             </div>
 
-            <!-- Weekly Message -->
-            <div v-if="analytics.productsExpiringThisWeek.length > 0" class="mt-4">
-              <div class="text-lg font-semibold text-gray-800">
+            <div class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div class="absolute inset-0 bg-gradient-to-br from-secondary-50/50 to-secondary-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="w-12 h-12 bg-gradient-to-r from-secondary-500 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i class="pi pi-box text-white text-xl"></i>
+                  </div>
+                </div>
+                <h3 class="text-2xl font-bold text-secondary-600 mb-1">{{ analytics.totalQuantityExpiring }}</h3>
+                <p class="text-sm text-gray-600">Unidades no total</p>
+              </div>
+            </div>
+
+            <div class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div class="absolute inset-0 bg-gradient-to-br from-red-50/50 to-red-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div class="relative">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i class="pi pi-exclamation-triangle text-white text-xl"></i>
+                  </div>
+                </div>
+                <h3 class="text-2xl font-bold text-red-600 mb-1">{{ analytics.urgentProducts.length }}</h3>
+                <p class="text-sm text-gray-600">Produtos urgentes</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <div v-if="analytics.productsExpiringThisWeek.length > 0">
+              <div class="text-xl font-bold text-gray-900 mb-2">
                 Você tem {{ analytics.productsExpiringThisWeek.length }}
                 {{
                   analytics.productsExpiringThisWeek.length === 1
@@ -87,138 +107,137 @@
                 }}
                 no período selecionado
               </div>
-              <div v-if="analytics.urgentProducts.length > 0" class="text-red-600 font-medium mt-1">
-                ⚠️ {{ analytics.urgentProducts.length }}
-                {{
-                  analytics.urgentProducts.length === 1 ? 'produto precisa' : 'produtos precisam'
-                }}
-                de atenção imediata!
+              <div v-if="analytics.urgentProducts.length > 0" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-100 to-orange-100 border border-red-200/50 rounded-full">
+                <i class="pi pi-exclamation-triangle text-red-600 mr-2"></i>
+                <span class="text-red-700 font-semibold">
+                  {{ analytics.urgentProducts.length }}
+                  {{
+                    analytics.urgentProducts.length === 1 ? 'produto precisa' : 'produtos precisam'
+                  }}
+                  de atenção imediata!
+                </span>
               </div>
             </div>
-            <div v-else class="mt-4">
-              <div class="text-lg font-semibold text-green-600">
-                ✅ Nenhum produto vencendo no período selecionado
+            <div v-else>
+              <div class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200/50 rounded-full">
+                <i class="pi pi-check-circle text-green-600 mr-2"></i>
+                <span class="text-green-700 font-semibold">
+                  Nenhum produto vencendo no período selecionado
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </template>
-    </Card>
+      </div>
 
-    <!-- Chart Controls -->
-    <div v-if="analytics?.productsExpiringThisWeek.length" class="mb-4">
-      <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-        <div>
-          <h3 class="text-lg font-semibold text-gray-800">Visualização dos Dados</h3>
-          <p class="text-gray-600 text-sm">
-            {{ selectedWeek?.label }} - {{ analytics.productsExpiringThisWeek.length }} produtos
-          </p>
+      <div v-if="analytics?.productsExpiringThisWeek.length" class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+        <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Visualização dos Dados</h3>
+            <p class="text-gray-600">
+              {{ selectedWeek?.label }} - {{ analytics.productsExpiringThisWeek.length }} produtos
+            </p>
+          </div>
+
+          <div class="flex gap-3">
+            <Button
+              icon="pi pi-chart-pie"
+              label="Pizza"
+              @click="chartType = 'pie'"
+              :class="chartType === 'pie' 
+                ? 'px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl shadow-lg border-none' 
+                : 'px-4 py-2 bg-white/80 text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300'"
+            />
+            <Button
+              icon="pi pi-chart-bar"
+              label="Barras"
+              @click="chartType = 'bar'"
+              :class="chartType === 'bar' 
+                ? 'px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl shadow-lg border-none' 
+                : 'px-4 py-2 bg-white/80 text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300'"
+            />
+          </div>
         </div>
 
-        <div class="flex gap-2">
-          <Button
-            :outlined="chartType !== 'pie'"
-            :severity="chartType === 'pie' ? 'primary' : 'secondary'"
-            icon="pi pi-chart-pie"
-            label="Pizza"
-            size="small"
-            @click="chartType = 'pie'"
+        <div class="chart-wrapper bg-white/50 rounded-2xl p-6 border border-white/30">
+          <PieChart
+            v-if="chartType === 'pie'"
+            ref="pieChartRef"
+            :week-offset="getWeekOffset()"
+            :key="`pie-chart-${selectedWeek?.value}`"
           />
-          <Button
-            :outlined="chartType !== 'bar'"
-            :severity="chartType === 'bar' ? 'primary' : 'secondary'"
-            icon="pi pi-chart-bar"
-            label="Barras"
-            size="small"
-            @click="chartType = 'bar'"
+          <BarChart
+            v-else-if="chartType === 'bar'"
+            ref="barChartRef"
+            :week-offset="getWeekOffset()"
+            :key="`bar-chart-${selectedWeek?.value}`"
           />
         </div>
       </div>
-    </div>
 
-    <!-- Charts -->
-    <div v-if="analytics?.productsExpiringThisWeek.length">
-      <Card>
-        <template #content>
-          <div class="chart-wrapper">
-            <PieChart
-              v-if="chartType === 'pie'"
-              ref="pieChartRef"
-              :week-offset="getWeekOffset()"
-              :key="`pie-chart-${selectedWeek?.value}`"
-            />
-            <BarChart
-              v-else-if="chartType === 'bar'"
-              ref="barChartRef"
-              :week-offset="getWeekOffset()"
-              :key="`bar-chart-${selectedWeek?.value}`"
-            />
-          </div>
-        </template>
-      </Card>
+      <div v-if="analytics?.productsExpiringThisWeek.length" class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Detalhes dos Produtos</h3>
+          <p class="text-gray-600">Lista completa dos produtos que vencem no período selecionado</p>
+        </div>
 
-      <!-- Products List -->
-      <Card class="mt-6">
-        <template #header>
-          <div class="p-4 pb-0">
-            <h3 class="text-lg font-semibold text-gray-800">Detalhes dos Produtos</h3>
-          </div>
-        </template>
-        <template #content>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div
-              v-for="item in analytics.productsExpiringThisWeek"
-              :key="item.product.id"
-              class="border rounded-lg p-4 hover:shadow-md transition-shadow"
-              :class="{
-                'border-red-300 bg-red-50': item.isExpiringSoon || item.isExpired,
-                'border-orange-300 bg-orange-50':
-                  !item.isExpiringSoon && !item.isExpired && item.daysUntilExpiration <= 3,
-                'border-gray-200': item.daysUntilExpiration > 3,
-              }"
-            >
-              <div class="flex justify-between items-start mb-2">
-                <h4 class="font-semibold text-gray-800 text-sm">{{ item.product.name }}</h4>
-                <Badge
-                  :value="item.product.quantity"
-                  :severity="
-                    item.product.quantity <= 2
-                      ? 'danger'
-                      : item.product.quantity <= 5
-                        ? 'warning'
-                        : 'success'
-                  "
-                />
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div
+            v-for="item in analytics.productsExpiringThisWeek"
+            :key="item.product.id"
+            class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            :class="{
+              'border-red-300/50 bg-gradient-to-br from-red-50/80 to-red-100/50': item.isExpired || item.isExpiringSoon,
+              'border-orange-300/50 bg-gradient-to-br from-orange-50/80 to-orange-100/50': 
+                !item.isExpired && !item.isExpiringSoon && item.daysUntilExpiration <= 3,
+              'border-gray-200/50': item.daysUntilExpiration > 3,
+            }"
+          >
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-gray-900 truncate mb-1">{{ item.product.name }}</h4>
+                <p class="text-xs text-gray-600">{{ item.product.brand }}</p>
               </div>
-              <p class="text-xs text-gray-600 mb-2">{{ item.product.brand }}</p>
-              <div class="flex justify-between items-center text-xs">
-                <span class="text-gray-600">
-                  {{ new Date(item.product.expirationDate).toLocaleDateString('pt-BR') }}
-                </span>
-                <span
+              <div class="ml-3">
+                <span 
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold"
                   :class="{
-                    'text-red-600 font-bold': item.isExpired || item.isExpiringSoon,
-                    'text-orange-600':
-                      !item.isExpired && !item.isExpiringSoon && item.daysUntilExpiration <= 3,
-                    'text-gray-600': item.daysUntilExpiration > 3,
+                    'bg-red-100 text-red-800': item.product.quantity <= 2,
+                    'bg-orange-100 text-orange-800': item.product.quantity > 2 && item.product.quantity <= 5,
+                    'bg-green-100 text-green-800': item.product.quantity > 5
                   }"
                 >
-                  {{ getDaysText(item.daysUntilExpiration) }}
+                  {{ item.product.quantity }}
                 </span>
               </div>
             </div>
+            
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-gray-600">
+                {{ new Date(item.product.expirationDate).toLocaleDateString('pt-BR') }}
+              </span>
+              <span
+                class="font-semibold px-2 py-1 rounded-full"
+                :class="{
+                  'text-red-700 bg-red-100': item.isExpired || item.isExpiringSoon,
+                  'text-orange-700 bg-orange-100':
+                    !item.isExpired && !item.isExpiringSoon && item.daysUntilExpiration <= 3,
+                  'text-gray-700 bg-gray-100': item.daysUntilExpiration > 3,
+                }"
+              >
+                {{ getDaysText(item.daysUntilExpiration) }}
+              </span>
+            </div>
           </div>
-        </template>
-      </Card>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import Card from 'primevue/card'
 import Button from 'primevue/button'
-import Badge from 'primevue/badge'
 import Dropdown from 'primevue/dropdown'
 import ProgressSpinner from 'primevue/progressspinner'
 import PieChart from './PieChart.vue'
@@ -258,7 +277,6 @@ const getWeekOffset = (): number => {
 const refreshData = async () => {
   await loadAnalytics()
 
-  // Refresh active chart
   const weekOffset = getWeekOffset()
   if (chartType.value === 'pie' && pieChartRef.value) {
     pieChartRef.value.refresh(weekOffset)
@@ -280,7 +298,6 @@ const getDaysText = (days: number): string => {
   }
 }
 
-// Watch for week selection changes
 watch(selectedWeek, async () => {
   if (selectedWeek.value) {
     await refreshData()
@@ -288,19 +305,14 @@ watch(selectedWeek, async () => {
 })
 
 onMounted(async () => {
-  // Load week options
   weekOptions.value = expirationAnalyticsService.getWeekOptions()
-  selectedWeek.value = weekOptions.value[0] // Default to current week
+  selectedWeek.value = weekOptions.value[0]
 
   await loadAnalytics()
 })
 </script>
 
 <style scoped>
-.expiration-charts {
-  width: 100%;
-}
-
 .chart-wrapper {
   min-height: 400px;
 }

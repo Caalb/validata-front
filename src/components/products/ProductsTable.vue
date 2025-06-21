@@ -1,103 +1,140 @@
 <template>
-  <div>
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold text-gray-800">Produtos Cadastrados</h2>
-      <Button
-        label="Cadastrar Produto"
-        icon="pi pi-plus"
-        @click="$emit('openCreateModal')"
-        class="p-button-success"
-      />
-    </div>
+  <div class="relative">
+    <div class="absolute top-0 right-1/4 w-64 h-64 bg-primary-100/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-1/4 w-48 h-48 bg-secondary-100/15 rounded-full blur-2xl"></div>
+    
+    <div class="relative z-10">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Produtos Cadastrados</h2>
+          <p class="text-gray-600">Gerencie seu estoque de forma inteligente</p>
+        </div>
+        <Button
+          label="Cadastrar Produto"
+          icon="pi pi-plus"
+          @click="$emit('openCreateModal')"
+          class="px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
+          size="large"
+        />
+      </div>
 
-    <Card class="shadow-md">
-      <template #content>
+      <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+        <div class="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <i class="pi pi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input 
+                type="text" 
+                placeholder="Buscar produtos..." 
+                class="pl-10 pr-4 py-2 bg-white/80 border border-gray-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-300 transition-all duration-200"
+              />
+            </div>
+            <select class="px-4 py-2 bg-white/80 border border-gray-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-300 transition-all duration-200">
+              <option>Todos os produtos</option>
+              <option>Próximos do vencimento</option>
+              <option>Estoque baixo</option>
+            </select>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-500">{{ products.length }} produtos</span>
+          </div>
+        </div>
         <div class="relative">
-          <DataTable
-            :value="products"
-            :loading="false"
-            responsive-layout="scroll"
-            stripedRows
-            showGridlines
-            tableStyle="min-width: 50rem"
-            class="p-datatable-gridlines"
-          >
-            <Column field="name" header="Nome" style="min-width: 200px">
-              <template #body="{ data }">
-                <div class="flex items-center gap-3">
-                  <i class="pi pi-box text-blue-500"></i>
-                  <span class="font-semibold text-gray-900">{{ data.name }}</span>
+          <div v-if="!loading && products.length > 0" class="grid gap-4">
+            <div 
+              v-for="product in products" 
+              :key="product.id"
+              class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
+              <div class="absolute inset-0 bg-gradient-to-r from-primary-50/20 to-secondary-50/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              <div class="relative flex items-center justify-between">
+                <div class="flex items-center space-x-4 flex-1">
+                  <div class="relative">
+                    <div class="w-12 h-12 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-xl flex items-center justify-center">
+                      <i class="pi pi-box text-primary-600 text-xl"></i>
+                    </div>
+                    <div 
+                      class="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                      :class="getQuantityBadgeClass(product.quantity)"
+                    >
+                      {{ product.quantity }}
+                    </div>
+                  </div>
+                  
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center space-x-3 mb-2">
+                      <h3 class="text-lg font-semibold text-gray-900 truncate">{{ product.name }}</h3>
+                      <span class="px-3 py-1 bg-primary-100 text-primary-700 text-xs rounded-full font-medium">
+                        {{ product.brand }}
+                      </span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-6 text-sm text-gray-600">
+                      <div class="flex items-center space-x-2">
+                        <i class="pi pi-calendar text-gray-400"></i>
+                        <span :class="getExpirationDateClass(product.expirationDate)">
+                          Vence em {{ getDaysUntilExpiration(product.expirationDate) }} dias
+                        </span>
+                      </div>
+                      
+                      <div class="flex items-center space-x-2">
+                        <i class="pi pi-box text-gray-400"></i>
+                        <span>{{ product.quantity }} unidades</span>
+                      </div>
+                      
+                      <div class="flex items-center space-x-2">
+                        <i class="pi pi-barcode text-gray-400"></i>
+                        <span class="font-mono text-xs">{{ product.barcodeCode }}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </template>
-            </Column>
-
-            <Column field="brand" header="Marca" style="min-width: 150px">
-              <template #body="{ data }">
-                <Tag :value="data.brand" severity="info" class="font-medium" />
-              </template>
-            </Column>
-
-            <Column field="quantity" header="Quantidade" style="min-width: 120px">
-              <template #body="{ data }">
-                <div class="flex items-center gap-2">
-                  <Badge
-                    :value="data.quantity"
-                    :severity="
-                      data.quantity <= 2 ? 'danger' : data.quantity <= 5 ? 'warning' : 'success'
-                    "
-                    size="large"
-                  />
-                  <small class="text-gray-500">unid.</small>
-                </div>
-              </template>
-            </Column>
-
-            <Column field="expirationDate" header="Data de Validade" style="min-width: 150px">
-              <template #body="{ data }">
-                <div class="flex items-center gap-2">
-                  <i
-                    class="pi pi-calendar"
-                    :class="getExpirationIconClass(data.expirationDate)"
-                  ></i>
-                  <span :class="getExpirationDateClass(data.expirationDate)" class="font-medium">
-                    {{ formatDate(data.expirationDate) }}
-                  </span>
-                </div>
-              </template>
-            </Column>
-
-            <Column header="Ações" :exportable="false" style="min-width: 100px">
-              <template #body="{ data }">
-                <div class="flex justify-center">
+                
+                <div class="flex items-center space-x-3">
+                  <div class="text-right">
+                    <div 
+                      class="px-3 py-1 rounded-full text-xs font-semibold"
+                      :class="getExpirationStatusClass(product.expirationDate)"
+                    >
+                      {{ getExpirationStatusText(product.expirationDate) }}
+                    </div>
+                  </div>
+                  
                   <Button
                     icon="pi pi-pencil"
-                    severity="info"
                     size="small"
-                    outlined
+                    text
                     rounded
-                    @click="$emit('editProduct', data)"
+                    @click="$emit('editProduct', product)"
                     v-tooltip.top="'Editar produto'"
-                    class="hover:bg-blue-50"
+                    class="text-primary-600 hover:bg-primary-50 w-10 h-10"
                   />
                 </div>
-              </template>
-            </Column>
-
-            <template #empty>
-              <div v-if="!loading" class="text-center py-12">
-                <div
-                  class="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4"
-                >
-                  <i class="pi pi-inbox text-3xl text-gray-400"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-700 mb-2">Nenhum produto encontrado</h3>
-                <p class="text-gray-500 text-sm max-w-sm mx-auto">
-                  Cadastre seu primeiro produto usando o botão "Cadastrar Produto" acima para
-                  começar.
-                </p>
               </div>
-            </template>
-          </DataTable>
+            </div>
+          </div>
+
+          <div v-else-if="!loading" class="text-center py-16">
+            <div class="relative mx-auto mb-8">
+              <div class="w-24 h-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto">
+                <i class="pi pi-inbox text-4xl text-gray-400"></i>
+              </div>
+              <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-full flex items-center justify-center">
+                <i class="pi pi-plus text-white text-sm"></i>
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Nenhum produto cadastrado</h3>
+            <p class="text-gray-600 mb-6 max-w-md mx-auto">
+              Começe cadastrando seu primeiro produto para gerenciar seu estoque de forma inteligente
+            </p>
+            <Button
+              label="Cadastrar Primeiro Produto"
+              icon="pi pi-plus"
+              @click="$emit('openCreateModal')"
+              class="px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
+            />
+          </div>
 
           <div
             v-if="loading"
@@ -109,21 +146,16 @@
             </div>
           </div>
         </div>
-      </template>
-    </Card>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
 import Button from 'primevue/button'
-import Tag from 'primevue/tag'
-import Badge from 'primevue/badge'
 import ProgressSpinner from 'primevue/progressspinner'
-import Card from 'primevue/card'
 import type { Product } from '@/types/product'
 import { productService } from '@/services/product.service'
 
@@ -159,36 +191,68 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('pt-BR')
 }
 
-const getExpirationDateClass = (dateString: string) => {
+const getDaysUntilExpiration = (dateString: string) => {
   const today = new Date()
   const expirationDate = new Date(dateString)
   const diffTime = expirationDate.getTime() - today.getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays < 0 ? 0 : diffDays
+}
 
-  if (diffDays < 0) {
+const getExpirationDateClass = (dateString: string) => {
+  const days = getDaysUntilExpiration(dateString)
+  
+  if (days === 0) {
     return 'text-red-600 font-bold'
-  } else if (diffDays <= 7) {
+  } else if (days <= 3) {
+    return 'text-red-500 font-semibold'
+  } else if (days <= 7) {
     return 'text-orange-500 font-semibold'
-  } else if (diffDays <= 30) {
+  } else if (days <= 15) {
     return 'text-yellow-600 font-medium'
   }
   return 'text-green-600'
 }
 
-const getExpirationIconClass = (dateString: string) => {
-  const today = new Date()
-  const expirationDate = new Date(dateString)
-  const diffTime = expirationDate.getTime() - today.getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-  if (diffDays < 0) {
-    return 'text-red-600'
-  } else if (diffDays <= 7) {
-    return 'text-orange-500'
-  } else if (diffDays <= 30) {
-    return 'text-yellow-600'
+const getExpirationStatusClass = (dateString: string) => {
+  const days = getDaysUntilExpiration(dateString)
+  
+  if (days === 0) {
+    return 'bg-red-100 text-red-800'
+  } else if (days <= 3) {
+    return 'bg-red-100 text-red-700'
+  } else if (days <= 7) {
+    return 'bg-orange-100 text-orange-700'
+  } else if (days <= 15) {
+    return 'bg-yellow-100 text-yellow-700'
   }
-  return 'text-green-600'
+  return 'bg-green-100 text-green-700'
+}
+
+const getExpirationStatusText = (dateString: string) => {
+  const days = getDaysUntilExpiration(dateString)
+  
+  if (days === 0) {
+    return 'VENCEU'
+  } else if (days <= 3) {
+    return 'CRÍTICO'
+  } else if (days <= 7) {
+    return 'ATENÇÃO'
+  } else if (days <= 15) {
+    return 'MODERADO'
+  }
+  return 'OK'
+}
+
+const getQuantityBadgeClass = (quantity: number) => {
+  if (quantity <= 2) {
+    return 'bg-red-500'
+  } else if (quantity <= 5) {
+    return 'bg-orange-500'
+  } else if (quantity <= 10) {
+    return 'bg-yellow-500'
+  }
+  return 'bg-green-500'
 }
 
 const refreshTable = () => {

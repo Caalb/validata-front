@@ -1,7 +1,6 @@
 <template>
   <AppLayout :page-title="pageTitle">
     <div class="dashboard-layout">
-      <!-- Dashboard Navigation Tabs -->
       <Card class="mb-6">
         <template #content>
           <div class="dashboard-nav">
@@ -31,7 +30,6 @@
         </template>
       </Card>
 
-      <!-- Dashboard Content -->
       <div class="dashboard-content">
         <router-view />
       </div>

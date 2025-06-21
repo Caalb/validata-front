@@ -9,35 +9,41 @@
 
       <how-it-works-section />
 
-      <div class="bg-red-600">
-        <div
-          class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between"
-        >
-          <h2
-            class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white text-center lg:text-left"
-          >
-            <span class="block">Pronto para reduzir o desperdício?</span>
-            <span class="block text-red-200 mt-2">Comece hoje mesmo.</span>
-          </h2>
-          <div
-            class="mt-8 flex flex-col sm:flex-row lg:mt-0 lg:flex-shrink-0 space-y-4 sm:space-y-0 sm:space-x-4"
-          >
+      <div class="relative bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 overflow-hidden">
+        <div class="absolute inset-0">
+          <div class="absolute top-0 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+          <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-white/5 rounded-full blur-2xl"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-20 lg:px-8 lg:flex lg:items-center lg:justify-between">
+          <div class="text-center lg:text-left">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4">
+              <span class="block">Pronto para transformar</span>
+              <span class="block text-white/90 mt-2">seu negócio?</span>
+            </h2>
+            <p class="text-lg text-white/80 max-w-2xl">
+              Junte-se a centenas de empresas que já reduziram desperdícios e aumentaram lucros.
+            </p>
+          </div>
+          
+          <div class="mt-8 flex flex-col sm:flex-row lg:mt-0 lg:flex-shrink-0 space-y-4 sm:space-y-0 sm:space-x-6">
             <Button
-              outlined
               size="large"
-              class="border-white text-white hover:bg-white hover:text-red-600"
+              class="px-8 py-4 bg-white text-primary-600 hover:bg-gray-50 font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
               @click="showAuthModal = true"
             >
-              Cadastre-se gratuitamente
+              <i class="pi pi-rocket mr-2"></i>
+              Começar Gratuitamente
             </Button>
 
             <Button
               outlined
               size="large"
-              class="border-white text-white hover:bg-white hover:text-red-600"
-              @click="scrollTo('#how-it-works')"
+              class="px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 hover:border-white font-semibold rounded-2xl backdrop-blur-sm transition-all duration-300"
+              @click="scrollTo('#features')"
             >
-              Saiba mais
+              <i class="pi pi-info-circle mr-2"></i>
+              Saiba Mais
             </Button>
           </div>
         </div>
@@ -55,7 +61,6 @@ import { ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import Button from 'primevue/button'
 
-// Components
 import TheNavbar from '@/components/layout/TheNavbar.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import HeroSection from '@/components/home/HeroSection.vue'

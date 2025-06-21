@@ -5,7 +5,7 @@ import type {
   BarcodeVerificationResponse,
 } from '@/types/product'
 
-// Helper function to get dates relative to today
+
 const getDateString = (daysFromToday: number): string => {
   const date = new Date()
   date.setDate(date.getDate() + daysFromToday)
@@ -18,7 +18,7 @@ const mockProducts: Product[] = [
     name: 'Iogurte Natural',
     brand: 'Danone',
     quantity: 6,
-    expirationDate: getDateString(0), // Vence hoje
+    expirationDate: getDateString(0), 
     barcodeCode: '7891000100127',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-15T10:00:00Z',
@@ -29,7 +29,7 @@ const mockProducts: Product[] = [
     name: 'Pão de Forma',
     brand: 'Wickbold',
     quantity: 3,
-    expirationDate: getDateString(1), // Vence amanhã
+    expirationDate: getDateString(1), 
     barcodeCode: '7891910000016',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-16T14:30:00Z',
@@ -40,7 +40,7 @@ const mockProducts: Product[] = [
     name: 'Queijo Mussarela',
     brand: 'Tirolez',
     quantity: 2,
-    expirationDate: getDateString(2), // Vence em 2 dias
+    expirationDate: getDateString(2), 
     barcodeCode: '7896003701326',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-17T09:15:00Z',
@@ -51,7 +51,7 @@ const mockProducts: Product[] = [
     name: 'Presunto Fatiado',
     brand: 'Sadia',
     quantity: 4,
-    expirationDate: getDateString(3), // Vence em 3 dias
+    expirationDate: getDateString(3), 
     barcodeCode: '7891164000014',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-18T16:45:00Z',
@@ -62,7 +62,7 @@ const mockProducts: Product[] = [
     name: 'Leite Integral',
     brand: 'Nestlé',
     quantity: 8,
-    expirationDate: getDateString(4), // Vence em 4 dias
+    expirationDate: getDateString(4), 
     barcodeCode: '7896058251234',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-19T11:20:00Z',
@@ -73,7 +73,7 @@ const mockProducts: Product[] = [
     name: 'Margarina',
     brand: 'Qualy',
     quantity: 5,
-    expirationDate: getDateString(5), // Vence em 5 dias
+    expirationDate: getDateString(5), 
     barcodeCode: '7891234567890',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-20T08:30:00Z',
@@ -84,7 +84,7 @@ const mockProducts: Product[] = [
     name: 'Requeijão',
     brand: 'Catupiry',
     quantity: 3,
-    expirationDate: getDateString(6), // Vence em 6 dias
+    expirationDate: getDateString(6), 
     barcodeCode: '7891987654321',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-21T15:45:00Z',
@@ -95,7 +95,7 @@ const mockProducts: Product[] = [
     name: 'Açúcar Cristal',
     brand: 'União',
     quantity: 10,
-    expirationDate: getDateString(30), // Vence em 30 dias
+    expirationDate: getDateString(30), 
     barcodeCode: '7891910000099',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-22T12:00:00Z',
@@ -106,7 +106,7 @@ const mockProducts: Product[] = [
     name: 'Arroz Branco',
     brand: 'Tio João',
     quantity: 15,
-    expirationDate: getDateString(60), // Vence em 60 dias
+    expirationDate: getDateString(60), 
     barcodeCode: '7891164000099',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-23T10:30:00Z',
@@ -117,19 +117,19 @@ const mockProducts: Product[] = [
     name: 'Feijão Preto',
     brand: 'Camil',
     quantity: 12,
-    expirationDate: getDateString(90), // Vence em 90 dias
+    expirationDate: getDateString(90), 
     barcodeCode: '7896058251999',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-24T14:15:00Z',
     updatedAt: '2024-01-24T14:15:00Z',
   },
-  // Produtos para próxima semana
+  
   {
     id: '11',
     name: 'Cream Cheese',
     brand: 'Philadelphia',
     quantity: 4,
-    expirationDate: getDateString(8), // Próxima semana
+    expirationDate: getDateString(8), 
     barcodeCode: '7891234567811',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-25T09:00:00Z',
@@ -140,7 +140,7 @@ const mockProducts: Product[] = [
     name: 'Salsicha Viena',
     brand: 'Perdigão',
     quantity: 6,
-    expirationDate: getDateString(10), // Próxima semana
+    expirationDate: getDateString(10), 
     barcodeCode: '7891234567812',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-26T11:30:00Z',
@@ -151,19 +151,19 @@ const mockProducts: Product[] = [
     name: 'Bacon Fatiado',
     brand: 'Seara',
     quantity: 3,
-    expirationDate: getDateString(12), // Próxima semana
+    expirationDate: getDateString(12), 
     barcodeCode: '7891234567813',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-27T14:00:00Z',
     updatedAt: '2024-01-27T14:00:00Z',
   },
-  // Produtos para semana seguinte
+  
   {
     id: '14',
     name: 'Mortadela',
     brand: 'Sadia',
     quantity: 2,
-    expirationDate: getDateString(15), // Duas semanas
+    expirationDate: getDateString(15), 
     barcodeCode: '7891234567814',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-28T16:30:00Z',
@@ -174,7 +174,7 @@ const mockProducts: Product[] = [
     name: 'Linguiça Calabresa',
     brand: 'Perdigão',
     quantity: 5,
-    expirationDate: getDateString(18), // Duas semanas
+    expirationDate: getDateString(18), 
     barcodeCode: '7891234567815',
     barcodeFormat: 'EAN_13',
     createdAt: '2024-01-29T10:45:00Z',
@@ -214,7 +214,7 @@ export const productService = {
     const existingProduct = mockProducts.find((p) => p.barcodeCode === barcodeCode)
 
     if (existingProduct) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      
       const { expirationDate, quantity, ...productWithoutExpiration } = existingProduct
       return {
         exists: true,

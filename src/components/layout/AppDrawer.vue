@@ -296,7 +296,6 @@ defineExpose({
   font-size: 0.875rem;
 }
 
-/* Submenu Styles */
 .nav-group {
   width: 100%;
 }
@@ -363,7 +362,6 @@ defineExpose({
   font-weight: 400;
 }
 
-/* Submenu Transition */
 .submenu-enter-active,
 .submenu-leave-active {
   transition: all 0.3s ease;
