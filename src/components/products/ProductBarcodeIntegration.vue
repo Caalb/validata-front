@@ -3,6 +3,7 @@
     <ProductsTable
       ref="productsTableRef"
       @open-create-modal="openCreateModal"
+      @open-sell-modal="openSellModal"
       @edit-product="openEditModal"
     />
 
@@ -12,6 +13,11 @@
       :product="selectedProduct"
       @product-saved="handleProductSaved"
       @open-barcode-scanner="openBarcodeScanner"
+    />
+
+    <SellModal
+      v-model:show="showSellModal"
+      @sale-completed="handleSaleCompleted"
     />
 
     <BarcodeScanner
@@ -26,6 +32,7 @@
 import { ref } from 'vue'
 import ProductsTable from './ProductsTable.vue'
 import ProductModal from './ProductModal.vue'
+import SellModal from './SellModal.vue'
 import BarcodeScanner from '@/components/barcode/BarcodeScanner.vue'
 import type { Product } from '@/types/product'
 
@@ -36,6 +43,7 @@ interface BarcodeDetectedEvent {
 
 const productsTableRef = ref<InstanceType<typeof ProductsTable>>()
 const showProductModal = ref(false)
+const showSellModal = ref(false)
 const showBarcodeScanner = ref(false)
 const selectedProduct = ref<Product | null>(null)
 const productModalRef = ref<InstanceType<typeof ProductModal>>()
@@ -45,12 +53,22 @@ const openCreateModal = () => {
   showBarcodeScanner.value = true
 }
 
+const openSellModal = () => {
+  showSellModal.value = true
+}
+
 const openEditModal = (product: Product) => {
   selectedProduct.value = product
   showProductModal.value = true
 }
 
 const handleProductSaved = () => {
+  if (productsTableRef.value) {
+    productsTableRef.value.refreshTable()
+  }
+}
+
+const handleSaleCompleted = () => {
   if (productsTableRef.value) {
     productsTableRef.value.refreshTable()
   }

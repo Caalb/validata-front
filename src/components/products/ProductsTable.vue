@@ -13,13 +13,22 @@
             Gerencie seu estoque de forma inteligente
           </p>
         </div>
-        <Button
-          :label="$attrs.isMobile ? '' : 'Cadastrar Produto'"
-          icon="pi pi-plus"
-          @click="$emit('openCreateModal')"
-          class="px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none self-start lg:self-auto"
-          :size="$attrs.isMobile ? 'small' : 'large'"
-        />
+        <div class="flex flex-col sm:flex-row gap-3">
+          <Button
+            :label="$attrs.isMobile ? '' : 'Vender Produto'"
+            icon="pi pi-shopping-cart"
+            @click="$emit('openSellModal')"
+            class="px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none self-start lg:self-auto"
+            :size="$attrs.isMobile ? 'small' : 'large'"
+          />
+          <Button
+            :label="$attrs.isMobile ? '' : 'Cadastrar Produto'"
+            icon="pi pi-plus"
+            @click="$emit('openCreateModal')"
+            class="px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none self-start lg:self-auto"
+            :size="$attrs.isMobile ? 'small' : 'large'"
+          />
+        </div>
       </div>
 
       <div
@@ -257,6 +266,7 @@ import { productService } from '@/services/product.service'
 
 defineEmits<{
   openCreateModal: []
+  openSellModal: []
   editProduct: [product: Product]
 }>()
 
