@@ -12,15 +12,16 @@
 
     <Card class="shadow-md">
       <template #content>
-        <DataTable
-          :value="products"
-          :loading="loading"
-          responsive-layout="scroll"
-          stripedRows
-          showGridlines
-          tableStyle="min-width: 50rem"
-          class="p-datatable-gridlines"
-        >
+        <div class="relative">
+          <DataTable
+            :value="products"
+            :loading="false"
+            responsive-layout="scroll"
+            stripedRows
+            showGridlines
+            tableStyle="min-width: 50rem"
+            class="p-datatable-gridlines"
+          >
           <Column field="name" header="Nome" style="min-width: 200px">
             <template #body="{ data }">
               <div class="flex items-center gap-3">
@@ -89,13 +90,16 @@
             </div>
           </template>
 
-          <template #loading>
-            <div class="text-center py-12">
-              <ProgressSpinner style="width: 60px; height: 60px" stroke-width="3" />
-              <p class="text-gray-600 mt-4 font-medium">Carregando produtos...</p>
+          </DataTable>
+          
+          <!-- Loading overlay quando está carregando -->
+          <div v-if="loading" class="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center rounded-lg z-10">
+            <div class="text-center">
+              <ProgressSpinner style="width: 50px; height: 50px" stroke-width="4" />
+              <p class="text-gray-600 mt-3 font-medium">Carregando produtos...</p>
             </div>
-          </template>
-        </DataTable>
+          </div>
+        </div>
       </template>
     </Card>
   </div>
