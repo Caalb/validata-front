@@ -23,8 +23,45 @@
 
       <nav class="drawer-nav">
         <ul class="nav-list">
-          <li v-for="item in menuItems" :key="item.route" class="nav-item">
+          <li v-for="item in menuItems" :key="item.route || item.label" class="nav-item">
+            <div v-if="item.children" class="nav-group">
+              <button
+                :class="[
+                  'nav-link',
+                  'nav-group-header',
+                  { 'nav-link-active': isGroupActive(item) },
+                ]"
+                @click="toggleSubmenu(item)"
+              >
+                <i :class="item.icon" class="nav-icon"></i>
+                <span class="nav-label">{{ item.label }}</span>
+                <i
+                  :class="['pi', item.expanded ? 'pi-chevron-down' : 'pi-chevron-right']"
+                  class="nav-chevron"
+                ></i>
+              </button>
+
+              <Transition name="submenu">
+                <ul v-if="item.expanded" class="submenu-list">
+                  <li v-for="child in item.children" :key="child.route" class="submenu-item">
+                    <router-link
+                      :to="child.route"
+                      :class="[
+                        'submenu-link',
+                        { 'submenu-link-active': $route.name === child.name },
+                      ]"
+                      @click="handleNavClick"
+                    >
+                      <i :class="child.icon" class="submenu-icon"></i>
+                      <span class="submenu-label">{{ child.label }}</span>
+                    </router-link>
+                  </li>
+                </ul>
+              </Transition>
+            </div>
+
             <router-link
+              v-else-if="item.route"
               :to="item.route"
               :class="['nav-link', { 'nav-link-active': $route.name === item.name }]"
               @click="handleNavClick"
@@ -41,21 +78,32 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 import Button from 'primevue/button'
 
-interface MenuItem {
+interface MenuItemChild {
   label: string
   icon: string
   route: string
   name: string
 }
 
+interface MenuItem {
+  label: string
+  icon: string
+  route?: string
+  name?: string
+  children?: MenuItemChild[]
+  expanded?: boolean
+}
+
+const route = useRoute()
 const drawerOpen = ref(false)
 const screenWidth = ref(window.innerWidth)
 
 const isMobile = computed(() => screenWidth.value < 768)
 
-const menuItems: MenuItem[] = [
+const menuItems = ref<MenuItem[]>([
   {
     label: 'Produtos',
     icon: 'pi pi-box',
@@ -65,10 +113,42 @@ const menuItems: MenuItem[] = [
   {
     label: 'Dashboard',
     icon: 'pi pi-chart-bar',
-    route: '/dashboard',
-    name: 'dashboard',
+    expanded: false,
+    children: [
+      {
+        label: 'Análise de Vencimentos',
+        icon: 'pi pi-exclamation-triangle',
+        route: '/dashboard/expiring',
+        name: 'dashboard-expiring',
+      },
+      {
+        label: 'Análise de Vendas',
+        icon: 'pi pi-chart-line',
+        route: '/dashboard/sales',
+        name: 'dashboard-sales',
+      },
+    ],
   },
-]
+])
+
+const toggleSubmenu = (item: MenuItem) => {
+  if (item.children) {
+    item.expanded = !item.expanded
+  }
+}
+
+const isGroupActive = (item: MenuItem): boolean => {
+  if (!item.children) return false
+  return item.children.some((child) => child.name === route.name)
+}
+
+const autoExpandActiveGroup = () => {
+  menuItems.value.forEach((item) => {
+    if (item.children && isGroupActive(item)) {
+      item.expanded = true
+    }
+  })
+}
 
 const closeDrawer = () => {
   drawerOpen.value = false
@@ -92,6 +172,7 @@ const handleResize = () => {
 onMounted(() => {
   window.addEventListener('resize', handleResize)
   drawerOpen.value = !isMobile.value
+  autoExpandActiveGroup()
 })
 
 onUnmounted(() => {
@@ -213,6 +294,94 @@ defineExpose({
 .nav-label {
   font-weight: 500;
   font-size: 0.875rem;
+}
+
+/* Submenu Styles */
+.nav-group {
+  width: 100%;
+}
+
+.nav-group-header {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  justify-content: space-between;
+}
+
+.nav-chevron {
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+  color: #6b7280;
+}
+
+.submenu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: #f9fafb;
+  border-left: 2px solid #e5e7eb;
+  margin-left: 1.5rem;
+}
+
+.submenu-item {
+  margin-bottom: 0;
+}
+
+.submenu-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  color: #6b7280;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-radius: 0;
+  font-size: 0.8125rem;
+}
+
+.submenu-link:hover {
+  background: #f3f4f6;
+  color: #dc2626;
+}
+
+.submenu-link-active {
+  background: #fef2f2;
+  color: #dc2626;
+  border-right: 3px solid #dc2626;
+  font-weight: 500;
+}
+
+.submenu-icon {
+  font-size: 1rem;
+  width: 1rem;
+  text-align: center;
+}
+
+.submenu-label {
+  font-weight: 400;
+}
+
+/* Submenu Transition */
+.submenu-enter-active,
+.submenu-leave-active {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.submenu-enter-from,
+.submenu-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-10px);
+}
+
+.submenu-enter-to,
+.submenu-leave-from {
+  opacity: 1;
+  max-height: 200px;
+  transform: translateY(0);
 }
 
 @media (min-width: 768px) {

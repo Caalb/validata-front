@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AppView from '../views/AppView.vue'
-import DashboardView from '../views/DashboardView.vue'
+import DashboardLayout from '../layouts/DashboardLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,8 +18,23 @@ const router = createRouter({
     },
     {
       path: '/dashboard',
-      name: 'dashboard',
-      component: DashboardView,
+      component: DashboardLayout,
+      children: [
+        {
+          path: '',
+          redirect: '/dashboard/expiring',
+        },
+        {
+          path: 'expiring',
+          name: 'dashboard-expiring',
+          component: () => import('../views/dashboard/ExpiringView.vue'),
+        },
+        {
+          path: 'sales',
+          name: 'dashboard-sales',
+          component: () => import('../views/dashboard/SalesView.vue'),
+        },
+      ],
     },
     {
       path: '/about',
