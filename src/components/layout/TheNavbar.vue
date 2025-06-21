@@ -10,7 +10,10 @@
         </div>
 
         <div class="hidden md:flex md:items-center md:space-x-4">
-          <Menubar :model="menuItems" class="border-0 bg-transparent menubar-padding" />
+          <Menubar
+            :model="menuItems as MenuItem[]"
+            class="border-0 bg-transparent menubar-padding"
+          />
           <Button label="Entrar / Cadastrar" @click="showAuthModal = true" size="small" />
         </div>
 
@@ -52,6 +55,12 @@ import Menubar from 'primevue/menubar'
 import Drawer from 'primevue/drawer'
 import Divider from 'primevue/divider'
 import type { MenuItem } from 'primevue/menuitem'
+
+interface CustomMenuItem {
+  label: string
+  icon: string
+  command: () => void
+}
 import AuthModal from '@/components/auth/AuthModal.vue'
 
 const mobileMenuOpen = ref(false)
@@ -62,29 +71,7 @@ const handleAuthClick = () => {
   mobileMenuOpen.value = false
 }
 
-const handleLogin = async (credentials: {
-  email: string
-  password: string
-  rememberMe: boolean
-}) => {
-  try {
-    console.log('Login attempt with:', credentials)
-    // Implementar lógica de login aqui
-  } catch (error) {
-    console.error('Erro no login:', error)
-  }
-}
-
-const handleRegister = async (data: { name: string; email: string; password: string }) => {
-  try {
-    console.log('Registration attempt with:', data)
-    // Implementar lógica de registro aqui
-  } catch (error) {
-    console.error('Erro no registro:', error)
-  }
-}
-
-const menuItems: MenuItem[] = [
+const menuItems: CustomMenuItem[] = [
   {
     label: 'Recursos',
     icon: 'pi pi-star',
