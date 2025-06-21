@@ -130,16 +130,5 @@ export const productService = {
     
     mockProducts[index] = updatedProduct
     return updatedProduct
-  },
-
-  async deleteProduct(id: string): Promise<void> {
-    await delay(400)
-    
-    const index = mockProducts.findIndex(p => p.id === id)
-    if (index === -1) {
-      throw new Error('Produto não encontrado')
-    }
-    
-    mockProducts.splice(index, 1)
   }
 }
