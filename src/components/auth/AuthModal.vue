@@ -3,45 +3,58 @@
     :visible="show"
     @update:visible="(value: boolean) => emit('update:show', value)"
     modal
-    :style="{ width: '480px' }"
+    :style="{ width: 'min(480px, 95vw)', maxHeight: '95vh' }"
     :closable="false"
     :draggable="false"
     class="modern-auth-modal"
     :pt="{
       root: 'bg-transparent',
       mask: 'bg-black/50 backdrop-blur-sm',
-      content: 'border-none shadow-none bg-transparent p-0 overflow-hidden rounded-3xl'
+      content:
+        'border-none shadow-none bg-transparent p-0 overflow-hidden rounded-3xl max-h-[95vh] overflow-y-auto',
     }"
   >
     <template #header>
       <div class="relative">
         <button
           @click="emit('update:show', false)"
-          class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:bg-white/30 transition-all duration-200"
+          class="absolute top-2 right-2 md:top-4 md:right-4 z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:bg-white/30 transition-all duration-200"
         >
-          <i class="pi pi-times text-sm"></i>
+          <i class="pi pi-times text-xs md:text-sm"></i>
         </button>
 
-        <div class="relative bg-white/95 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-primary-50/80 via-white/90 to-secondary-50/80"></div>
-          
-          <div class="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-primary-200/30 to-transparent rounded-full blur-2xl"></div>
-          <div class="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-secondary-200/30 to-transparent rounded-full blur-2xl"></div>
-          
-          <div class="relative z-10 p-8">
-            <div class="text-center mb-8">
-              <div class="relative mx-auto mb-6">
-                <div class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-2xl blur opacity-30"></div>
-                <div class="relative w-16 h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center shadow-lg mx-auto">
-                  <i class="pi pi-user text-white text-2xl"></i>
+        <div
+          class="relative bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-primary-50/80 via-white/90 to-secondary-50/80"
+          ></div>
+
+          <div
+            class="absolute top-0 left-0 w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-primary-200/30 to-transparent rounded-full blur-2xl"
+          ></div>
+          <div
+            class="absolute bottom-0 right-0 w-32 h-32 md:w-40 md:h-40 bg-gradient-to-tl from-secondary-200/30 to-transparent rounded-full blur-2xl"
+          ></div>
+
+          <div class="relative z-10 p-6 md:p-8">
+            <div class="text-center mb-6 md:mb-8">
+              <div class="relative mx-auto mb-4 md:mb-6">
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-2xl blur opacity-30"
+                ></div>
+                <div
+                  class="relative w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center shadow-lg mx-auto"
+                >
+                  <i class="pi pi-user text-white text-xl md:text-2xl"></i>
                 </div>
               </div>
 
-              <h3 class="text-2xl font-bold text-gray-900 mb-3">
+              <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
                 {{ isLoginView ? 'Bem-vindo de volta!' : 'Crie sua conta' }}
               </h3>
 
-              <p class="text-gray-600 leading-relaxed">
+              <p class="text-sm md:text-base text-gray-600 leading-relaxed px-2 md:px-0">
                 {{
                   isLoginView
                     ? 'Entre para gerenciar seu estoque e reduzir desperdícios de forma inteligente'
@@ -50,9 +63,9 @@
               </p>
             </div>
 
-            <form @submit.prevent="handleSubmit" class="space-y-6">
+            <form @submit.prevent="handleSubmit" class="space-y-4 md:space-y-6">
               <div v-if="!isLoginView" class="animate-fade-in">
-                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+                <label for="name" class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">
                   <i class="pi pi-user mr-2 text-primary-500"></i>
                   Nome completo
                 </label>
@@ -61,18 +74,23 @@
                     id="name"
                     v-model="formValue.name"
                     placeholder="Digite seu nome completo"
-                    class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
+                    class="w-full pl-3 md:pl-4 pr-3 md:pr-4 py-2.5 md:py-3 text-sm md:text-base rounded-xl md:rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                     :class="{ 'border-danger-300 bg-danger-50/50': nameError }"
                   />
                   <div v-if="nameError" class="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <i class="pi pi-exclamation-triangle text-danger-400"></i>
+                    <i class="pi pi-exclamation-triangle text-danger-400 text-sm"></i>
                   </div>
                 </div>
-                <small v-if="nameError" class="text-danger-500 text-xs mt-1 block">{{ nameError }}</small>
+                <small v-if="nameError" class="text-danger-500 text-xs mt-1 block">{{
+                  nameError
+                }}</small>
               </div>
 
               <div class="animate-fade-in" :style="{ animationDelay: '0.1s' }">
-                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  for="email"
+                  class="block text-xs md:text-sm font-semibold text-gray-700 mb-2"
+                >
                   <i class="pi pi-envelope mr-2 text-primary-500"></i>
                   Email
                 </label>
@@ -82,18 +100,23 @@
                     v-model="formValue.email"
                     type="email"
                     placeholder="Digite seu email"
-                    class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
+                    class="w-full pl-3 md:pl-4 pr-3 md:pr-4 py-2.5 md:py-3 text-sm md:text-base rounded-xl md:rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                     :class="{ 'border-danger-300 bg-danger-50/50': emailError }"
                   />
                   <div v-if="emailError" class="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <i class="pi pi-exclamation-triangle text-danger-400"></i>
+                    <i class="pi pi-exclamation-triangle text-danger-400 text-sm"></i>
                   </div>
                 </div>
-                <small v-if="emailError" class="text-danger-500 text-xs mt-1 block">{{ emailError }}</small>
+                <small v-if="emailError" class="text-danger-500 text-xs mt-1 block">{{
+                  emailError
+                }}</small>
               </div>
 
               <div class="animate-fade-in" :style="{ animationDelay: '0.2s' }">
-                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  for="password"
+                  class="block text-xs md:text-sm font-semibold text-gray-700 mb-2"
+                >
                   <i class="pi pi-lock mr-2 text-primary-500"></i>
                   Senha
                 </label>
@@ -107,36 +130,48 @@
                     class="w-full"
                     :pt="{
                       input: {
-                        class: 'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300'
-                      }
+                        class:
+                          'w-full pl-3 md:pl-4 pr-10 md:pr-12 py-2.5 md:py-3 text-sm md:text-base rounded-xl md:rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
+                      },
                     }"
                     :inputClass="{ 'border-danger-300 bg-danger-50/50': passwordError }"
                   />
-                  <div v-if="passwordError" class="absolute inset-y-0 right-12 flex items-center pr-3">
-                    <i class="pi pi-exclamation-triangle text-danger-400"></i>
+                  <div
+                    v-if="passwordError"
+                    class="absolute inset-y-0 right-10 md:right-12 flex items-center pr-2 md:pr-3"
+                  >
+                    <i class="pi pi-exclamation-triangle text-danger-400 text-sm"></i>
                   </div>
                 </div>
-                <small v-if="passwordError" class="text-danger-500 text-xs mt-1 block">{{ passwordError }}</small>
+                <small v-if="passwordError" class="text-danger-500 text-xs mt-1 block">{{
+                  passwordError
+                }}</small>
               </div>
 
-              <div v-if="isLoginView" class="flex items-center justify-between animate-fade-in" style="animation-delay: 0.3s;">
+              <div
+                v-if="isLoginView"
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 animate-fade-in"
+                style="animation-delay: 0.3s"
+              >
                 <div class="flex items-center">
-                  <Checkbox 
-                    v-model="rememberMe" 
-                    inputId="remember" 
-                    binary 
-                    class="mr-2" 
+                  <Checkbox
+                    v-model="rememberMe"
+                    inputId="remember"
+                    binary
+                    class="mr-2"
                     :pt="{
-                      box: 'w-5 h-5 border-2 border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm'
+                      box: 'w-4 h-4 md:w-5 md:h-5 border-2 border-gray-300 rounded-lg bg-white/50 backdrop-blur-sm',
                     }"
                   />
-                  <label for="remember" class="text-sm text-gray-600 font-medium">Lembrar de mim</label>
+                  <label for="remember" class="text-xs md:text-sm text-gray-600 font-medium"
+                    >Lembrar de mim</label
+                  >
                 </div>
-                <Button 
-                  label="Esqueceu sua senha?" 
-                  link 
-                  size="small" 
-                  class="text-primary-600 hover:text-primary-700 font-medium"
+                <Button
+                  label="Esqueceu sua senha?"
+                  link
+                  size="small"
+                  class="text-primary-600 hover:text-primary-700 font-medium text-xs md:text-sm self-start sm:self-auto"
                 />
               </div>
 
@@ -145,8 +180,8 @@
                   type="submit"
                   :label="isLoginView ? 'Entrar na conta' : 'Criar conta'"
                   :loading="loading"
-                  class="w-full py-4 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
-                  size="large"
+                  class="w-full py-3 md:py-4 text-sm md:text-base bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-bold rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
+                  :size="$attrs.isMobile ? 'normal' : 'large'"
                 >
                   <template #icon>
                     <i class="pi pi-arrow-right ml-2"></i>
@@ -155,41 +190,46 @@
               </div>
             </form>
 
-            <div class="my-8 animate-fade-in" style="animation-delay: 0.5s;">
+            <div class="my-6 md:my-8 animate-fade-in" style="animation-delay: 0.5s">
               <div class="relative">
                 <div class="absolute inset-0 flex items-center">
                   <div class="w-full border-t border-gray-200/50"></div>
                 </div>
-                <div class="relative flex justify-center text-sm">
-                  <span class="px-4 bg-white/80 backdrop-blur-sm text-gray-500 font-medium rounded-full">
+                <div class="relative flex justify-center text-xs md:text-sm">
+                  <span
+                    class="px-3 md:px-4 bg-white/80 backdrop-blur-sm text-gray-500 font-medium rounded-full"
+                  >
                     {{ isLoginView ? 'Novo por aqui?' : 'Já tem uma conta?' }}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div class="text-center animate-fade-in" style="animation-delay: 0.6s;">
+            <div class="text-center animate-fade-in" style="animation-delay: 0.6s">
               <Button
                 :label="isLoginView ? 'Criar uma conta gratuita' : 'Fazer login'"
                 link
-                class="w-full py-3 text-primary-600 hover:text-primary-700 font-semibold rounded-2xl hover:bg-primary-50/50 transition-all duration-300"
-                size="large"
+                class="w-full py-2.5 md:py-3 text-sm md:text-base text-primary-600 hover:text-primary-700 font-semibold rounded-xl md:rounded-2xl hover:bg-primary-50/50 transition-all duration-300"
+                :size="$attrs.isMobile ? 'normal' : 'large'"
                 @click="toggleAuthView"
               />
             </div>
 
-            <div class="mt-6 pt-6 border-t border-gray-200/30 animate-fade-in" style="animation-delay: 0.7s;">
-              <div class="grid grid-cols-3 gap-4 text-center">
+            <div
+              class="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-200/30 animate-fade-in"
+              style="animation-delay: 0.7s"
+            >
+              <div class="grid grid-cols-3 gap-2 md:gap-4 text-center">
                 <div class="text-center">
-                  <i class="pi pi-shield-check text-accent-500 text-lg mb-1 block"></i>
+                  <i class="pi pi-shield-check text-accent-500 text-base md:text-lg mb-1 block"></i>
                   <span class="text-xs text-gray-500">Seguro</span>
                 </div>
                 <div class="text-center">
-                  <i class="pi pi-clock text-secondary-500 text-lg mb-1 block"></i>
+                  <i class="pi pi-clock text-secondary-500 text-base md:text-lg mb-1 block"></i>
                   <span class="text-xs text-gray-500">Rápido</span>
                 </div>
                 <div class="text-center">
-                  <i class="pi pi-star-fill text-yellow-500 text-lg mb-1 block"></i>
+                  <i class="pi pi-star-fill text-yellow-500 text-base md:text-lg mb-1 block"></i>
                   <span class="text-xs text-gray-500">Confiável</span>
                 </div>
               </div>
@@ -210,7 +250,6 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
-import Divider from 'primevue/divider'
 import { authService } from '@/services/auth.service'
 import type { AxiosError } from 'axios'
 

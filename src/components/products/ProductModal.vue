@@ -9,7 +9,7 @@
     :pt="{
       root: 'bg-transparent',
       mask: 'bg-black/50 backdrop-blur-sm',
-      content: 'border-none shadow-none bg-transparent p-0 overflow-hidden rounded-3xl'
+      content: 'border-none shadow-none bg-transparent p-0 overflow-hidden rounded-3xl',
     }"
   >
     <template #header>
@@ -21,17 +21,29 @@
           <i class="pi pi-times text-sm"></i>
         </button>
 
-        <div class="relative bg-white/95 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-primary-50/80 via-white/90 to-secondary-50/80"></div>
-          
-          <div class="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-primary-200/30 to-transparent rounded-full blur-2xl"></div>
-          <div class="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-secondary-200/30 to-transparent rounded-full blur-2xl"></div>
-          
+        <div
+          class="relative bg-white/95 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-primary-50/80 via-white/90 to-secondary-50/80"
+          ></div>
+
+          <div
+            class="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-primary-200/30 to-transparent rounded-full blur-2xl"
+          ></div>
+          <div
+            class="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-secondary-200/30 to-transparent rounded-full blur-2xl"
+          ></div>
+
           <div class="relative z-10 p-8">
             <div class="text-center mb-8">
               <div class="relative mx-auto mb-6">
-                <div class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-2xl blur opacity-30"></div>
-                <div class="relative w-16 h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center shadow-lg mx-auto">
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-2xl blur opacity-30"
+                ></div>
+                <div
+                  class="relative w-16 h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center shadow-lg mx-auto"
+                >
                   <i class="pi pi-box text-white text-2xl"></i>
                 </div>
               </div>
@@ -65,23 +77,17 @@
                       class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                       :class="{ 'border-danger-300 bg-danger-50/50': errors.barcodeCode }"
                     />
-                    <div v-if="errors.barcodeCode" class="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <div
+                      v-if="errors.barcodeCode"
+                      class="absolute inset-y-0 right-0 flex items-center pr-3"
+                    >
                       <i class="pi pi-exclamation-triangle text-danger-400"></i>
                     </div>
                   </div>
-                  <Button
-                    type="button"
-                    icon="pi pi-camera"
-                    @click="$emit('openBarcodeScanner')"
-                    :disabled="barcodeLoading || isEdit"
-                    v-tooltip.top="'Escanear código de barras'"
-                    class="px-4 py-3 bg-gradient-to-r from-secondary-500 to-accent-500 hover:from-secondary-600 hover:to-accent-600 text-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
-                  />
                 </div>
-                <small v-if="errors.barcodeCode" class="text-danger-500 text-xs mt-1 block">{{ errors.barcodeCode }}</small>
               </div>
 
-              <div class="animate-fade-in" style="animation-delay: 0.1s;">
+              <div class="animate-fade-in" style="animation-delay: 0.1s">
                 <label for="barcodeFormat" class="block text-sm font-semibold text-gray-700 mb-2">
                   <i class="pi pi-cog mr-2 text-primary-500"></i>
                   Formato do Código *
@@ -97,23 +103,32 @@
                     class="w-full"
                     :pt="{
                       root: 'w-full',
-                      input: 'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300'
+                      input:
+                        'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
                     }"
                     :class="{ 'border-danger-300 bg-danger-50/50': errors.barcodeFormat }"
                   />
-                  <div v-if="errors.barcodeFormat" class="absolute inset-y-0 right-8 flex items-center pr-3">
+                  <div
+                    v-if="errors.barcodeFormat"
+                    class="absolute inset-y-0 right-8 flex items-center pr-3"
+                  >
                     <i class="pi pi-exclamation-triangle text-danger-400"></i>
                   </div>
                 </div>
-                <small v-if="errors.barcodeFormat" class="text-danger-500 text-xs mt-1 block">{{ errors.barcodeFormat }}</small>
+                <small v-if="errors.barcodeFormat" class="text-danger-500 text-xs mt-1 block">{{
+                  errors.barcodeFormat
+                }}</small>
               </div>
 
-              <div v-if="barcodeLoading" class="text-center py-6 animate-fade-in bg-primary-50/50 rounded-2xl">
+              <div
+                v-if="barcodeLoading"
+                class="text-center py-6 animate-fade-in bg-primary-50/50 rounded-2xl"
+              >
                 <ProgressSpinner style="width: 40px; height: 40px" stroke-width="4" />
                 <p class="text-sm text-gray-600 mt-3 font-medium">Verificando produto...</p>
               </div>
 
-              <div class="animate-fade-in" style="animation-delay: 0.2s;">
+              <div class="animate-fade-in" style="animation-delay: 0.2s">
                 <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
                   <i class="pi pi-tag mr-2 text-primary-500"></i>
                   Nome do Produto *
@@ -131,10 +146,12 @@
                     <i class="pi pi-exclamation-triangle text-danger-400"></i>
                   </div>
                 </div>
-                <small v-if="errors.name" class="text-danger-500 text-xs mt-1 block">{{ errors.name }}</small>
+                <small v-if="errors.name" class="text-danger-500 text-xs mt-1 block">{{
+                  errors.name
+                }}</small>
               </div>
 
-              <div class="animate-fade-in" style="animation-delay: 0.3s;">
+              <div class="animate-fade-in" style="animation-delay: 0.3s">
                 <label for="brand" class="block text-sm font-semibold text-gray-700 mb-2">
                   <i class="pi pi-bookmark mr-2 text-primary-500"></i>
                   Marca *
@@ -148,15 +165,20 @@
                     class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                     :class="{ 'border-danger-300 bg-danger-50/50': errors.brand }"
                   />
-                  <div v-if="errors.brand" class="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <div
+                    v-if="errors.brand"
+                    class="absolute inset-y-0 right-0 flex items-center pr-3"
+                  >
                     <i class="pi pi-exclamation-triangle text-danger-400"></i>
                   </div>
                 </div>
-                <small v-if="errors.brand" class="text-danger-500 text-xs mt-1 block">{{ errors.brand }}</small>
+                <small v-if="errors.brand" class="text-danger-500 text-xs mt-1 block">{{
+                  errors.brand
+                }}</small>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="animate-fade-in" style="animation-delay: 0.4s;">
+                <div class="animate-fade-in" style="animation-delay: 0.4s">
                   <label for="quantity" class="block text-sm font-semibold text-gray-700 mb-2">
                     <i class="pi pi-hashtag mr-2 text-primary-500"></i>
                     Quantidade *
@@ -171,19 +193,28 @@
                       placeholder="Qtd."
                       class="w-full"
                       :pt="{
-                        input: 'w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300'
+                        input:
+                          'w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
                       }"
                       :inputClass="{ 'border-danger-300 bg-danger-50/50': errors.quantity }"
                     />
-                    <div v-if="errors.quantity" class="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <div
+                      v-if="errors.quantity"
+                      class="absolute inset-y-0 right-0 flex items-center pr-3"
+                    >
                       <i class="pi pi-exclamation-triangle text-danger-400"></i>
                     </div>
                   </div>
-                  <small v-if="errors.quantity" class="text-danger-500 text-xs mt-1 block">{{ errors.quantity }}</small>
+                  <small v-if="errors.quantity" class="text-danger-500 text-xs mt-1 block">{{
+                    errors.quantity
+                  }}</small>
                 </div>
 
-                <div class="animate-fade-in" style="animation-delay: 0.5s;">
-                  <label for="expirationDate" class="block text-sm font-semibold text-gray-700 mb-2">
+                <div class="animate-fade-in" style="animation-delay: 0.5s">
+                  <label
+                    for="expirationDate"
+                    class="block text-sm font-semibold text-gray-700 mb-2"
+                  >
                     <i class="pi pi-calendar mr-2 text-primary-500"></i>
                     Data de Validade *
                   </label>
@@ -198,33 +229,48 @@
                       class="w-full"
                       show-icon
                       :pt="{
-                        input: 'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300'
+                        input:
+                          'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
                       }"
                       :inputClass="{ 'border-danger-300 bg-danger-50/50': errors.expirationDate }"
                     />
-                    <div v-if="errors.expirationDate" class="absolute inset-y-0 right-12 flex items-center pr-3">
+                    <div
+                      v-if="errors.expirationDate"
+                      class="absolute inset-y-0 right-12 flex items-center pr-3"
+                    >
                       <i class="pi pi-exclamation-triangle text-danger-400"></i>
                     </div>
                   </div>
-                  <small v-if="errors.expirationDate" class="text-danger-500 text-xs mt-1 block">{{ errors.expirationDate }}</small>
+                  <small v-if="errors.expirationDate" class="text-danger-500 text-xs mt-1 block">{{
+                    errors.expirationDate
+                  }}</small>
                 </div>
               </div>
 
-              <div v-if="productExists" class="animate-fade-in bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-2xl p-4">
+              <div
+                v-if="productExists"
+                class="animate-fade-in bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-2xl p-4"
+              >
                 <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-400 rounded-xl flex items-center justify-center">
+                  <div
+                    class="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-400 rounded-xl flex items-center justify-center"
+                  >
                     <i class="pi pi-check-circle text-white"></i>
                   </div>
                   <div>
                     <h4 class="font-semibold text-green-800 mb-1">Produto encontrado!</h4>
                     <p class="text-sm text-green-700">
-                      Dados preenchidos automaticamente. Ajuste a quantidade e data de validade conforme necessário.
+                      Dados preenchidos automaticamente. Ajuste a quantidade e data de validade
+                      conforme necessário.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div class="flex justify-end gap-4 pt-6 animate-fade-in" style="animation-delay: 0.6s;">
+              <div
+                class="flex justify-end gap-4 pt-6 animate-fade-in"
+                style="animation-delay: 0.6s"
+              >
                 <Button
                   label="Cancelar"
                   @click="$emit('update:visible', false)"
@@ -244,7 +290,6 @@
         </div>
       </div>
     </template>
-
   </Dialog>
 </template>
 
