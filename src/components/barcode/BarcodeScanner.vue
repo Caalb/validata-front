@@ -84,12 +84,17 @@ const startScanner = async () => {
           type: 'LiveStream',
           target: targetElement,
           constraints: {
+            width: 640,
+            height: 480,
             facingMode: 'environment',
           },
         },
+        numOfWorkers: navigator.hardwareConcurrency || 4,
+        frequency: 10,
         decoder: {
           readers: ['ean_reader'],
         },
+        locate: true,
       },
       (err: Error | null) => {
         if (err) {

@@ -228,7 +228,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           <div
             v-for="item in analytics.productsExpiringThisWeek"
-            :key="item.product.id"
+            :key="item.stock.id"
             class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             :class="{
               'border-red-300/50 bg-gradient-to-br from-red-50/80 to-red-100/50':
@@ -240,27 +240,27 @@
           >
             <div class="flex items-start justify-between mb-3">
               <div class="flex-1 min-w-0">
-                <h4 class="font-semibold text-gray-900 truncate mb-1">{{ item.product.name }}</h4>
-                <p class="text-xs text-gray-600">{{ item.product.brand }}</p>
+                <h4 class="font-semibold text-gray-900 truncate mb-1">{{ item.stock.product?.name || 'Produto' }}</h4>
+                <p class="text-xs text-gray-600">{{ item.stock.product?.brand || 'Sem marca' }}</p>
               </div>
               <div class="ml-3">
                 <span
                   class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold"
                   :class="{
-                    'bg-red-100 text-red-800': item.product.quantity <= 2,
+                    'bg-red-100 text-red-800': item.stock.quantity <= 2,
                     'bg-orange-100 text-orange-800':
-                      item.product.quantity > 2 && item.product.quantity <= 5,
-                    'bg-green-100 text-green-800': item.product.quantity > 5,
+                      item.stock.quantity > 2 && item.stock.quantity <= 5,
+                    'bg-green-100 text-green-800': item.stock.quantity > 5,
                   }"
                 >
-                  {{ item.product.quantity }}
+                  {{ item.stock.quantity }}
                 </span>
               </div>
             </div>
 
             <div class="flex items-center justify-between text-xs">
               <span class="text-gray-600">
-                {{ new Date(item.product.expirationDate).toLocaleDateString('pt-BR') }}
+                {{ new Date(item.stock.expiration_date).toLocaleDateString('pt-BR') }}
               </span>
               <span
                 class="font-semibold px-2 py-1 rounded-full"

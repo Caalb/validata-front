@@ -238,13 +238,15 @@
 
                   <div class="flex-1 min-w-0">
                     <h4 class="text-lg font-semibold text-gray-900 truncate">
-                      {{ selectedProduct.name }}
+                      {{ selectedProduct.product?.name || 'Produto' }}
                     </h4>
-                    <p class="text-sm text-gray-600 mb-1">{{ selectedProduct.brand }}</p>
+                    <p class="text-sm text-gray-600 mb-1">
+                      {{ selectedProduct.product?.brand || 'Sem marca' }}
+                    </p>
                     <div class="flex items-center space-x-4 text-xs text-gray-500">
-                      <span>Código: {{ selectedProduct.barcodeCode }}</span>
-                      <span :class="getExpirationDateClass(selectedProduct.expirationDate)">
-                        Vence em {{ getDaysUntilExpiration(selectedProduct.expirationDate) }} dias
+                      <span>Código: {{ selectedProduct.product?.barcode || 'N/A' }}</span>
+                      <span :class="getExpirationDateClass(selectedProduct.expiration_date)">
+                        Vence em {{ getDaysUntilExpiration(selectedProduct.expiration_date) }} dias
                       </span>
                     </div>
                   </div>
@@ -322,8 +324,9 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Quagga, { type QuaggaJSResultObject } from '@ericblade/quagga2'
-import type { Product } from '@/types/product'
+import type { Stock } from '@/types/stock'
 import { productService } from '@/services/product.service'
+import { stockService } from '@/services/stock.service'
 import { saleService } from '@/services/sale.service'
 
 interface Props {
@@ -342,7 +345,7 @@ const toast = useToast()
 
 const scannerMode = ref(true)
 const manualMode = ref(false)
-const selectedProduct = ref<Product | null>(null)
+const selectedProduct = ref<Stock | null>(null)
 const showBarcodeScanner = ref(false)
 
 const barcodeInput = ref('')
@@ -502,23 +505,32 @@ const searchProduct = async () => {
 
   searchingProduct.value = true
   try {
-    const products = await productService.getProducts(1, 1000)
-    const product = products.products.find((p) => p.barcodeCode === barcodeInput.value.trim())
+    const products = await productService.getProducts()
+    const product = products.products.find((p) => p.barcode === barcodeInput.value.trim())
 
     if (product) {
-      const sameProducts = products.products.filter(
-        (p) => p.barcodeCode === barcodeInput.value.trim(),
-      )
-      const closestExpirationProduct = sameProducts.reduce((closest, current) => {
-        const closestDays = getDaysUntilExpiration(closest.expirationDate)
-        const currentDays = getDaysUntilExpiration(current.expirationDate)
-        return currentDays < closestDays ? current : closest
-      })
+      const stocks = await stockService.getStocksByProduct(product.id)
+      const availableStocks = stocks.filter((stock) => stock.quantity > 0)
 
-      selectedProduct.value = closestExpirationProduct
-      sellQuantity.value = 1
-      scannerMode.value = false
-      manualMode.value = false
+      if (availableStocks.length > 0) {
+        const closestExpirationStock = availableStocks.reduce((closest, current) => {
+          const closestDays = getDaysUntilExpiration(closest.expiration_date)
+          const currentDays = getDaysUntilExpiration(current.expiration_date)
+          return currentDays < closestDays ? current : closest
+        })
+
+        selectedProduct.value = { ...closestExpirationStock, product }
+        sellQuantity.value = 1
+        scannerMode.value = false
+        manualMode.value = false
+      } else {
+        toast.add({
+          severity: 'warn',
+          summary: 'Produto sem estoque',
+          detail: 'Produto encontrado mas sem estoque disponível',
+          life: 3000,
+        })
+      }
     } else {
       toast.add({
         severity: 'warn',
@@ -545,14 +557,14 @@ const confirmSale = async () => {
   processingSale.value = true
   try {
     await saleService.sellProduct({
-      productId: selectedProduct.value.id,
+      productId: selectedProduct.value.productId,
       quantity: sellQuantity.value,
     })
 
     toast.add({
       severity: 'success',
       summary: 'Venda realizada',
-      detail: `${sellQuantity.value} unidade(s) de ${selectedProduct.value.name} vendida(s) com sucesso!`,
+      detail: `${sellQuantity.value} unidade(s) de ${selectedProduct.value.product?.name || 'produto'} vendida(s) com sucesso!`,
       life: 3000,
     })
 
@@ -581,16 +593,16 @@ const resetModal = () => {
   showBarcodeScanner.value = false
 }
 
-const getDaysUntilExpiration = (dateString: string) => {
+const getDaysUntilExpiration = (date: string | Date) => {
   const today = new Date()
-  const expirationDate = new Date(dateString)
+  const expirationDate = new Date(date)
   const diffTime = expirationDate.getTime() - today.getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   return diffDays < 0 ? 0 : diffDays
 }
 
-const getExpirationDateClass = (dateString: string) => {
-  const days = getDaysUntilExpiration(dateString)
+const getExpirationDateClass = (date: string | Date) => {
+  const days = getDaysUntilExpiration(date)
 
   if (days === 0) {
     return 'text-red-600 font-bold'

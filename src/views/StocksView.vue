@@ -1,11 +1,48 @@
 <template>
   <AppLayout page-title="Controle de Estoque">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-      <StocksTable
-        ref="stocksTableRef"
-        @edit-stock="handleEditStock"
-        @delete-stock="handleDeleteStock"
-      />
+      <!-- Tab Navigation -->
+      <div class="mb-6">
+        <div class="flex space-x-1 bg-white/60 backdrop-blur-sm rounded-2xl p-1 border border-white/20">
+          <button
+            @click="activeTab = 'dashboard'"
+            :class="[
+              'flex-1 px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200',
+              activeTab === 'dashboard'
+                ? 'bg-primary-500 text-white shadow-lg'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+            ]"
+          >
+            <i class="pi pi-chart-bar mr-2"></i>
+            Dashboard
+          </button>
+          <button
+            @click="activeTab = 'table'"
+            :class="[
+              'flex-1 px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200',
+              activeTab === 'table'
+                ? 'bg-primary-500 text-white shadow-lg'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+            ]"
+          >
+            <i class="pi pi-table mr-2"></i>
+            Tabela
+          </button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div v-if="activeTab === 'dashboard'">
+        <StockDashboard ref="stockDashboardRef" />
+      </div>
+      
+      <div v-else>
+        <StocksTable
+          ref="stocksTableRef"
+          @edit-stock="handleEditStock"
+          @delete-stock="handleDeleteStock"
+        />
+      </div>
     </div>
 
     <!-- Delete Confirmation Dialog -->
@@ -87,13 +124,16 @@ import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import StocksTable from '@/components/stocks/StocksTable.vue'
+import StockDashboard from '@/components/stocks/StockDashboard.vue'
 import StockEditModal from '@/components/stocks/StockEditModal.vue'
 import type { Stock } from '@/types/stock'
 import { stockService } from '@/services/stock.service'
 
 const toast = useToast()
 
+const activeTab = ref('dashboard')
 const stocksTableRef = ref()
+const stockDashboardRef = ref()
 const deleteDialogVisible = ref(false)
 const editModalVisible = ref(false)
 const stockToDelete = ref<Stock | null>(null)
@@ -125,6 +165,7 @@ const confirmDelete = async () => {
     })
 
     stocksTableRef.value?.loadStocks()
+    stockDashboardRef.value?.loadStocks()
     deleteDialogVisible.value = false
     stockToDelete.value = null
   } catch (error) {
@@ -141,12 +182,12 @@ const confirmDelete = async () => {
 
 const handleStockUpdated = (updatedStock: Stock) => {
   stocksTableRef.value?.loadStocks()
+  stockDashboardRef.value?.loadStocks()
   editModalVisible.value = false
   stockToEdit.value = null
 }
 
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('pt-BR')
+const formatDate = (date: string | Date): string => {
+  return new Date(date).toLocaleDateString('pt-BR')
 }
 </script>

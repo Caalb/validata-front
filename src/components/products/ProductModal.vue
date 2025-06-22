@@ -102,7 +102,7 @@
                     <InputText
                       id="category"
                       v-model="formData.category"
-                      :disabled="loading || (productFound && !isEdit)"
+                      :disabled="loading || (!!productFound && !isEdit)"
                       placeholder="Digite a categoria do produto"
                       class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                       :class="{ 'border-danger-300 bg-danger-50/50': errors.category }"
@@ -128,7 +128,7 @@
                     <InputText
                       id="name"
                       v-model="formData.name"
-                      :disabled="loading || (productFound && !isEdit)"
+                      :disabled="loading || (!!productFound && !isEdit)"
                       placeholder="Digite o nome do produto"
                       class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                       :class="{ 'border-danger-300 bg-danger-50/50': errors.name }"
@@ -154,7 +154,7 @@
                     <InputText
                       id="brand"
                       v-model="formData.brand"
-                      :disabled="loading || (productFound && !isEdit)"
+                      :disabled="loading || (!!productFound && !isEdit)"
                       placeholder="Digite a marca do produto"
                       class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                       :class="{ 'border-danger-300 bg-danger-50/50': errors.brand }"
@@ -180,7 +180,7 @@
                     <InputNumber
                       id="base_price"
                       v-model="formData.base_price"
-                      :disabled="loading || (productFound && !isEdit)"
+                      :disabled="loading || (!!productFound && !isEdit)"
                       :min="0"
                       :min-fraction-digits="2"
                       :max-fraction-digits="2"
