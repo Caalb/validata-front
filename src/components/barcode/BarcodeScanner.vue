@@ -1,7 +1,6 @@
 <template>
   <div class="barcode-scanner">
     <div v-if="isScanning" class="scanner-container">
-      <!-- Header -->
       <div class="scanner-header">
         <h2 class="scanner-title">
           <i class="pi pi-camera mr-2"></i>
@@ -10,29 +9,23 @@
         <p class="scanner-subtitle">Posicione o código dentro da área de leitura</p>
       </div>
 
-      <!-- Scanner Viewport with Overlay -->
       <div class="scanner-viewport">
         <div id="interactive" class="viewport"></div>
 
-        <!-- Scanning Overlay -->
         <div class="scanning-overlay">
-          <!-- Corner markers -->
           <div class="corner-marker top-left"></div>
           <div class="corner-marker top-right"></div>
           <div class="corner-marker bottom-left"></div>
           <div class="corner-marker bottom-right"></div>
 
-          <!-- Scanning line animation -->
           <div class="scan-line"></div>
 
-          <!-- Focus area -->
           <div class="focus-area">
             <div class="focus-frame"></div>
           </div>
         </div>
       </div>
 
-      <!-- Instructions -->
       <div class="scanner-instructions">
         <div class="instruction-item">
           <i class="pi pi-eye text-blue-400"></i>
@@ -48,7 +41,6 @@
         </div>
       </div>
 
-      <!-- Controls -->
       <div class="scanner-controls">
         <Button
           @click="stopScanner"
@@ -96,13 +88,7 @@ const startScanner = async () => {
           },
         },
         decoder: {
-          readers: [
-            'ean_reader',
-            'ean_8_reader',
-            'code_128_reader',
-            'code_39_reader',
-            'upc_reader',
-          ],
+          readers: ['ean_reader'],
         },
       },
       (err: Error | null) => {
@@ -117,6 +103,7 @@ const startScanner = async () => {
     )
 
     const detectionHandler = (result: QuaggaJSResultObject) => {
+      console.log(result)
       if (result.codeResult.code) {
         const format = result.codeResult.format || 'EAN_13'
         emit('barcode-detected', { code: result.codeResult.code, format })
@@ -357,7 +344,9 @@ onUnmounted(() => {
 
 .close-button:focus {
   outline: none !important;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2), 0 15px 40px rgba(239, 68, 68, 0.4) !important;
+  box-shadow:
+    0 0 0 3px rgba(239, 68, 68, 0.2),
+    0 15px 40px rgba(239, 68, 68, 0.4) !important;
 }
 
 @keyframes scan-move {

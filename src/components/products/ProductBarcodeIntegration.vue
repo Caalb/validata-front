@@ -15,10 +15,7 @@
       @open-barcode-scanner="openBarcodeScanner"
     />
 
-    <SellModal
-      v-model:show="showSellModal"
-      @sale-completed="handleSaleCompleted"
-    />
+    <SellModal v-model:show="showSellModal" @sale-completed="handleSaleCompleted" />
 
     <BarcodeScanner
       v-if="showBarcodeScanner"
@@ -83,16 +80,15 @@ const closeBarcodeScanner = () => {
 }
 
 const handleBarcodeDetected = (event: BarcodeDetectedEvent) => {
+  console.log(event)
   showBarcodeScanner.value = false
 
-  // Abrir modal de produto e definir o código de barras
   selectedProduct.value = null
   showProductModal.value = true
 
-  // Aguardar próximo tick para garantir que o modal está montado
   nextTick(() => {
     if (productModalRef.value) {
-      productModalRef.value.setBarcodeCode(event.code, event.format)
+      productModalRef.value.setBarcodeCode(event.code)
     }
   })
 }

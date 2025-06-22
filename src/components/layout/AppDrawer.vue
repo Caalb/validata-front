@@ -111,6 +111,12 @@ const menuItems = ref<MenuItem[]>([
     name: 'app',
   },
   {
+    label: 'Estoque',
+    icon: 'pi pi-warehouse',
+    route: '/stocks',
+    name: 'stocks',
+  },
+  {
     label: 'Dashboard',
     icon: 'pi pi-chart-bar',
     expanded: false,
