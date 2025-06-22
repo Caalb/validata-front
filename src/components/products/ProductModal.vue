@@ -4,7 +4,7 @@
     :modal="true"
     :closable="false"
     :draggable="false"
-    :style="{ width: '600px', zIndex: 1000 }"
+    :style="{ width: '90vw', maxWidth: '600px', zIndex: 1000 }"
     @update:visible="$emit('update:visible', $event)"
     :pt="{
       root: 'bg-transparent',
@@ -35,8 +35,8 @@
             class="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-secondary-200/30 to-transparent rounded-full blur-2xl"
           ></div>
 
-          <div class="relative z-10 p-8">
-            <div class="text-center mb-8">
+          <div class="relative z-10 p-4 sm:p-6 md:p-8">
+            <div class="text-center mb-6 sm:mb-8">
               <div class="relative mx-auto mb-6">
                 <div
                   class="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-2xl blur opacity-30"
@@ -48,7 +48,7 @@
                 </div>
               </div>
 
-              <h3 class="text-2xl font-bold text-gray-900 mb-3">
+              <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                 {{ isEdit ? 'Editar Produto' : 'Cadastrar Novo Produto' }}
               </h3>
 
@@ -61,24 +61,24 @@
               </p>
             </div>
 
-            <form @submit.prevent="handleSubmit" class="space-y-6">
+            <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-6">
               <div class="animate-fade-in">
-                <label for="barcodeCode" class="block text-sm font-semibold text-gray-700 mb-2">
+                <label for="barcode" class="block text-sm font-semibold text-gray-700 mb-2">
                   <i class="pi pi-barcode mr-2 text-primary-500"></i>
                   Código de Barras *
                 </label>
                 <div class="flex gap-3">
                   <div class="flex-1 relative">
                     <InputText
-                      id="barcodeCode"
-                      v-model="formData.barcodeCode"
-                      :disabled="barcodeLoading || isEdit"
+                      id="barcode"
+                      v-model="formData.barcode"
+                      :disabled="loading || isEdit"
                       placeholder="Digite ou escaneie o código"
                       class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
-                      :class="{ 'border-danger-300 bg-danger-50/50': errors.barcodeCode }"
+                      :class="{ 'border-danger-300 bg-danger-50/50': errors.barcode }"
                     />
                     <div
-                      v-if="errors.barcodeCode"
+                      v-if="errors.barcode"
                       class="absolute inset-y-0 right-0 flex items-center pr-3"
                     >
                       <i class="pi pi-exclamation-triangle text-danger-400"></i>
@@ -88,44 +88,29 @@
               </div>
 
               <div class="animate-fade-in" style="animation-delay: 0.1s">
-                <label for="barcodeFormat" class="block text-sm font-semibold text-gray-700 mb-2">
-                  <i class="pi pi-cog mr-2 text-primary-500"></i>
-                  Formato do Código *
+                <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="pi pi-tags mr-2 text-primary-500"></i>
+                  Categoria *
                 </label>
                 <div class="relative">
-                  <Dropdown
-                    id="barcodeFormat"
-                    v-model="formData.barcodeFormat"
-                    :options="barcodeFormats"
-                    option-label="label"
-                    option-value="value"
-                    placeholder="Selecione o formato"
-                    class="w-full"
-                    :pt="{
-                      root: 'w-full',
-                      input:
-                        'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
-                    }"
-                    :class="{ 'border-danger-300 bg-danger-50/50': errors.barcodeFormat }"
+                  <InputText
+                    id="category"
+                    v-model="formData.category"
+                    :disabled="loading"
+                    placeholder="Digite a categoria do produto"
+                    class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
+                    :class="{ 'border-danger-300 bg-danger-50/50': errors.category }"
                   />
                   <div
-                    v-if="errors.barcodeFormat"
-                    class="absolute inset-y-0 right-8 flex items-center pr-3"
+                    v-if="errors.category"
+                    class="absolute inset-y-0 right-0 flex items-center pr-3"
                   >
                     <i class="pi pi-exclamation-triangle text-danger-400"></i>
                   </div>
                 </div>
-                <small v-if="errors.barcodeFormat" class="text-danger-500 text-xs mt-1 block">{{
-                  errors.barcodeFormat
+                <small v-if="errors.category" class="text-danger-500 text-xs mt-1 block">{{
+                  errors.category
                 }}</small>
-              </div>
-
-              <div
-                v-if="barcodeLoading"
-                class="text-center py-6 animate-fade-in bg-primary-50/50 rounded-2xl"
-              >
-                <ProgressSpinner style="width: 40px; height: 40px" stroke-width="4" />
-                <p class="text-sm text-gray-600 mt-3 font-medium">Verificando produto...</p>
               </div>
 
               <div class="animate-fade-in" style="animation-delay: 0.2s">
@@ -137,7 +122,7 @@
                   <InputText
                     id="name"
                     v-model="formData.name"
-                    :disabled="barcodeLoading"
+                    :disabled="loading"
                     placeholder="Digite o nome do produto"
                     class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                     :class="{ 'border-danger-300 bg-danger-50/50': errors.name }"
@@ -160,7 +145,7 @@
                   <InputText
                     id="brand"
                     v-model="formData.brand"
-                    :disabled="barcodeLoading"
+                    :disabled="loading"
                     placeholder="Digite a marca do produto"
                     class="w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300"
                     :class="{ 'border-danger-300 bg-danger-50/50': errors.brand }"
@@ -177,112 +162,58 @@
                 }}</small>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="animate-fade-in" style="animation-delay: 0.4s">
-                  <label for="quantity" class="block text-sm font-semibold text-gray-700 mb-2">
-                    <i class="pi pi-hashtag mr-2 text-primary-500"></i>
-                    Quantidade *
-                  </label>
-                  <div class="relative">
-                    <InputNumber
-                      id="quantity"
-                      v-model="formData.quantity"
-                      :disabled="barcodeLoading"
-                      :min="1"
-                      :max="1000"
-                      placeholder="Qtd."
-                      class="w-full"
-                      :pt="{
-                        input:
-                          'w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
-                      }"
-                      :inputClass="{ 'border-danger-300 bg-danger-50/50': errors.quantity }"
-                    />
-                    <div
-                      v-if="errors.quantity"
-                      class="absolute inset-y-0 right-0 flex items-center pr-3"
-                    >
-                      <i class="pi pi-exclamation-triangle text-danger-400"></i>
-                    </div>
-                  </div>
-                  <small v-if="errors.quantity" class="text-danger-500 text-xs mt-1 block">{{
-                    errors.quantity
-                  }}</small>
-                </div>
-
-                <div class="animate-fade-in" style="animation-delay: 0.5s">
-                  <label
-                    for="expirationDate"
-                    class="block text-sm font-semibold text-gray-700 mb-2"
-                  >
-                    <i class="pi pi-calendar mr-2 text-primary-500"></i>
-                    Data de Validade *
-                  </label>
-                  <div class="relative">
-                    <Calendar
-                      id="expirationDate"
-                      v-model="formData.expirationDate"
-                      :disabled="barcodeLoading"
-                      date-format="dd/mm/yy"
-                      :min-date="new Date()"
-                      placeholder="dd/mm/aaaa"
-                      class="w-full"
-                      show-icon
-                      :pt="{
-                        input:
-                          'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
-                      }"
-                      :inputClass="{ 'border-danger-300 bg-danger-50/50': errors.expirationDate }"
-                    />
-                    <div
-                      v-if="errors.expirationDate"
-                      class="absolute inset-y-0 right-12 flex items-center pr-3"
-                    >
-                      <i class="pi pi-exclamation-triangle text-danger-400"></i>
-                    </div>
-                  </div>
-                  <small v-if="errors.expirationDate" class="text-danger-500 text-xs mt-1 block">{{
-                    errors.expirationDate
-                  }}</small>
-                </div>
-              </div>
-
-              <div
-                v-if="productExists"
-                class="animate-fade-in bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-2xl p-4"
-              >
-                <div class="flex items-center space-x-3">
+              <div class="animate-fade-in" style="animation-delay: 0.4s">
+                <label for="base_price" class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="pi pi-dollar mr-2 text-primary-500"></i>
+                  Preço Base *
+                </label>
+                <div class="relative">
+                  <InputNumber
+                    id="base_price"
+                    v-model="formData.base_price"
+                    :disabled="loading"
+                    :min="0"
+                    :min-fraction-digits="2"
+                    :max-fraction-digits="2"
+                    placeholder="0,00"
+                    mode="currency"
+                    currency="BRL"
+                    locale="pt-BR"
+                    class="w-full"
+                    :pt="{
+                      input:
+                        'w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
+                    }"
+                    :inputClass="{ 'border-danger-300 bg-danger-50/50': errors.base_price }"
+                  />
                   <div
-                    class="w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-400 rounded-xl flex items-center justify-center"
+                    v-if="errors.base_price"
+                    class="absolute inset-y-0 right-0 flex items-center pr-3"
                   >
-                    <i class="pi pi-check-circle text-white"></i>
-                  </div>
-                  <div>
-                    <h4 class="font-semibold text-green-800 mb-1">Produto encontrado!</h4>
-                    <p class="text-sm text-green-700">
-                      Dados preenchidos automaticamente. Ajuste a quantidade e data de validade
-                      conforme necessário.
-                    </p>
+                    <i class="pi pi-exclamation-triangle text-danger-400"></i>
                   </div>
                 </div>
+                <small v-if="errors.base_price" class="text-danger-500 text-xs mt-1 block">{{
+                  errors.base_price
+                }}</small>
               </div>
 
               <div
-                class="flex justify-end gap-4 pt-6 animate-fade-in"
+                class="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4 sm:pt-6 animate-fade-in"
                 style="animation-delay: 0.6s"
               >
                 <Button
                   label="Cancelar"
                   @click="$emit('update:visible', false)"
                   :disabled="loading"
-                  class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-2xl transition-all duration-300"
+                  class="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-2xl transition-all duration-300"
                 />
                 <Button
                   type="submit"
                   :label="isEdit ? 'Atualizar Produto' : 'Cadastrar Produto'"
                   :loading="loading"
-                  :disabled="barcodeLoading"
-                  class="px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
+                  :disabled="loading"
+                  class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none"
                 />
               </div>
             </form>
@@ -299,11 +230,7 @@ import { useToast } from 'primevue/usetoast'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
-import Dropdown from 'primevue/dropdown'
-import Calendar from 'primevue/calendar'
 import Button from 'primevue/button'
-import Message from 'primevue/message'
-import ProgressSpinner from 'primevue/progressspinner'
 import type { Product, ProductCreateRequest, ProductUpdateRequest } from '@/types/product'
 import { productService } from '@/services/product.service'
 
@@ -315,7 +242,6 @@ interface Props {
 interface Emits {
   'update:visible': [value: boolean]
   productSaved: [product: Product]
-  openBarcodeScanner: []
 }
 
 const props = defineProps<Props>()
@@ -324,63 +250,44 @@ const emit = defineEmits<Emits>()
 const toast = useToast()
 
 const formData = ref({
-  barcodeCode: '',
-  barcodeFormat: 'EAN_13',
+  barcode: '',
   name: '',
   brand: '',
-  quantity: 1,
-  expirationDate: null as Date | null,
+  category: '',
+  base_price: 0,
 })
 
 const errors = ref<Record<string, string>>({})
 const loading = ref(false)
-const barcodeLoading = ref(false)
-const productExists = ref(false)
-
-const barcodeFormats = [
-  { label: 'EAN-13', value: 'EAN_13' },
-  { label: 'EAN-8', value: 'EAN_8' },
-  { label: 'UPC-A', value: 'UPC_A' },
-  { label: 'UPC-E', value: 'UPC_E' },
-  { label: 'Code 128', value: 'CODE_128' },
-  { label: 'Code 39', value: 'CODE_39' },
-]
 
 const isEdit = computed(() => !!props.product)
 
 const resetForm = () => {
   formData.value = {
-    barcodeCode: '',
-    barcodeFormat: 'EAN_13',
+    barcode: '',
     name: '',
     brand: '',
-    quantity: 1,
-    expirationDate: null,
+    category: '',
+    base_price: 0,
   }
   errors.value = {}
-  productExists.value = false
 }
 
 const populateForm = (product: Product) => {
   formData.value = {
-    barcodeCode: product.barcodeCode,
-    barcodeFormat: product.barcodeFormat,
+    barcode: product.barcode,
     name: product.name,
     brand: product.brand,
-    quantity: product.quantity,
-    expirationDate: new Date(product.expirationDate),
+    category: product.category,
+    base_price: product.base_price,
   }
 }
 
 const validateForm = (): boolean => {
   errors.value = {}
 
-  if (!formData.value.barcodeCode.trim()) {
-    errors.value.barcodeCode = 'Código de barras é obrigatório'
-  }
-
-  if (!formData.value.barcodeFormat) {
-    errors.value.barcodeFormat = 'Formato do código é obrigatório'
+  if (!formData.value.barcode.trim()) {
+    errors.value.barcode = 'Código de barras é obrigatório'
   }
 
   if (!formData.value.name.trim()) {
@@ -391,12 +298,12 @@ const validateForm = (): boolean => {
     errors.value.brand = 'Marca é obrigatória'
   }
 
-  if (!formData.value.quantity || formData.value.quantity < 1) {
-    errors.value.quantity = 'Quantidade deve ser maior que zero'
+  if (!formData.value.category.trim()) {
+    errors.value.category = 'Categoria é obrigatória'
   }
 
-  if (!formData.value.expirationDate) {
-    errors.value.expirationDate = 'Data de validade é obrigatória'
+  if (!formData.value.base_price || formData.value.base_price <= 0) {
+    errors.value.base_price = 'Preço base deve ser maior que zero'
   }
 
   return Object.keys(errors.value).length === 0
@@ -409,12 +316,11 @@ const handleSubmit = async () => {
 
   try {
     const productData = {
-      barcodeCode: formData.value.barcodeCode,
-      barcodeFormat: formData.value.barcodeFormat,
+      barcode: formData.value.barcode,
       name: formData.value.name,
       brand: formData.value.brand,
-      quantity: formData.value.quantity,
-      expirationDate: formData.value.expirationDate!.toISOString().split('T')[0],
+      category: formData.value.category,
+      base_price: formData.value.base_price,
     }
 
     let savedProduct: Product
@@ -455,40 +361,6 @@ const handleSubmit = async () => {
   }
 }
 
-const verifyBarcode = async (barcodeCode: string) => {
-  if (!barcodeCode.trim() || isEdit.value) return
-
-  barcodeLoading.value = true
-  productExists.value = false
-
-  try {
-    const response = await productService.verifyBarcode(barcodeCode)
-
-    if (response.exists && response.product) {
-      productExists.value = true
-      formData.value.name = response.product.name
-      formData.value.brand = response.product.brand
-      formData.value.barcodeFormat = response.product.barcodeFormat
-    }
-  } catch {
-    toast.add({
-      severity: 'error',
-      summary: 'Erro',
-      detail: 'Erro ao verificar código de barras',
-      life: 3000,
-    })
-  } finally {
-    barcodeLoading.value = false
-  }
-}
-
-const setBarcodeCode = (code: string, format: string = 'EAN_13') => {
-  formData.value.barcodeCode = code
-  formData.value.barcodeFormat = format
-  verifyBarcode(code)
-}
-
-defineExpose({ setBarcodeCode })
 watch(
   () => props.visible,
   (newValue) => {
@@ -498,15 +370,6 @@ watch(
       } else {
         resetForm()
       }
-    }
-  },
-)
-
-watch(
-  () => formData.value.barcodeCode,
-  (newCode) => {
-    if (newCode && newCode.length >= 8) {
-      verifyBarcode(newCode)
     }
   },
 )

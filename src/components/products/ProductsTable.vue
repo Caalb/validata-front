@@ -10,17 +10,10 @@
         <div>
           <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Produtos Cadastrados</h2>
           <p class="text-gray-600 text-sm md:text-base">
-            Gerencie seu estoque de forma inteligente
+            Gerencie seu catálogo de produtos de forma inteligente
           </p>
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
-          <Button
-            :label="$attrs.isMobile ? '' : 'Vender Produto'"
-            icon="pi pi-shopping-cart"
-            @click="$emit('openSellModal')"
-            class="px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none self-start lg:self-auto"
-            :size="$attrs.isMobile ? 'small' : 'large'"
-          />
           <Button
             :label="$attrs.isMobile ? '' : 'Cadastrar Produto'"
             icon="pi pi-plus"
@@ -53,9 +46,11 @@
             <select
               class="px-4 py-2 w-full sm:w-auto bg-white/80 border border-gray-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-300 transition-all duration-200"
             >
-              <option>Todos os produtos</option>
-              <option>Próximos do vencimento</option>
-              <option>Estoque baixo</option>
+              <option>Todas as categorias</option>
+              <option>Laticínios</option>
+              <option>Panificados</option>
+              <option>Frios</option>
+              <option>Grãos</option>
             </select>
           </div>
           <div class="flex items-center space-x-2 self-start lg:self-auto">
@@ -85,10 +80,9 @@
                           <i class="pi pi-box text-primary-600 text-lg"></i>
                         </div>
                         <div
-                          class="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                          :class="getQuantityBadgeClass(product.quantity)"
+                          class="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold text-white"
                         >
-                          {{ product.quantity }}
+                          <i class="pi pi-check text-xs"></i>
                         </div>
                       </div>
                       <div class="flex-1 min-w-0">
@@ -104,10 +98,9 @@
                     </div>
                     <div class="flex items-center space-x-2">
                       <div
-                        class="px-2 py-1 rounded-full text-xs font-semibold"
-                        :class="getExpirationStatusClass(product.expirationDate)"
+                        class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700"
                       >
-                        {{ getExpirationStatusText(product.expirationDate) }}
+                        {{ product.category }}
                       </div>
                       <Button
                         icon="pi pi-pencil"
@@ -123,18 +116,18 @@
 
                   <div class="space-y-2 text-sm text-gray-600">
                     <div class="flex items-center space-x-2">
-                      <i class="pi pi-calendar text-gray-400"></i>
-                      <span :class="getExpirationDateClass(product.expirationDate)">
-                        Vence em {{ getDaysUntilExpiration(product.expirationDate) }} dias
+                      <i class="pi pi-dollar text-gray-400"></i>
+                      <span class="font-semibold text-green-600">
+                        R$ {{ product.base_price.toFixed(2).replace('.', ',') }}
                       </span>
                     </div>
                     <div class="flex items-center space-x-2">
-                      <i class="pi pi-box text-gray-400"></i>
-                      <span>{{ product.quantity }} unidades</span>
+                      <i class="pi pi-chart-line text-gray-400"></i>
+                      <span>Frequência: {{ (product.sales_frequency * 100).toFixed(0) }}%</span>
                     </div>
                     <div class="flex items-center space-x-2">
                       <i class="pi pi-barcode text-gray-400"></i>
-                      <span class="font-mono text-xs">{{ product.barcodeCode }}</span>
+                      <span class="font-mono text-xs">{{ product.barcode }}</span>
                     </div>
                   </div>
                 </div>
@@ -148,10 +141,9 @@
                         <i class="pi pi-box text-primary-600 text-xl"></i>
                       </div>
                       <div
-                        class="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                        :class="getQuantityBadgeClass(product.quantity)"
+                        class="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold text-white"
                       >
-                        {{ product.quantity }}
+                        <i class="pi pi-check text-sm"></i>
                       </div>
                     </div>
 
@@ -171,20 +163,20 @@
                         class="flex flex-col lg:flex-row lg:items-center lg:space-x-6 space-y-1 lg:space-y-0 text-sm text-gray-600"
                       >
                         <div class="flex items-center space-x-2">
-                          <i class="pi pi-calendar text-gray-400"></i>
-                          <span :class="getExpirationDateClass(product.expirationDate)">
-                            Vence em {{ getDaysUntilExpiration(product.expirationDate) }} dias
+                          <i class="pi pi-dollar text-gray-400"></i>
+                          <span class="font-semibold text-green-600">
+                            R$ {{ product.base_price.toFixed(2).replace('.', ',') }}
                           </span>
                         </div>
 
                         <div class="flex items-center space-x-2">
-                          <i class="pi pi-box text-gray-400"></i>
-                          <span>{{ product.quantity }} unidades</span>
+                          <i class="pi pi-chart-line text-gray-400"></i>
+                          <span>Frequência: {{ (product.sales_frequency * 100).toFixed(0) }}%</span>
                         </div>
 
                         <div class="flex items-center space-x-2">
                           <i class="pi pi-barcode text-gray-400"></i>
-                          <span class="font-mono text-xs">{{ product.barcodeCode }}</span>
+                          <span class="font-mono text-xs">{{ product.barcode }}</span>
                         </div>
                       </div>
                     </div>
@@ -193,10 +185,9 @@
                   <div class="flex items-center space-x-3">
                     <div class="text-right">
                       <div
-                        class="px-3 py-1 rounded-full text-xs font-semibold"
-                        :class="getExpirationStatusClass(product.expirationDate)"
+                        class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700"
                       >
-                        {{ getExpirationStatusText(product.expirationDate) }}
+                        {{ product.category }}
                       </div>
                     </div>
 
@@ -230,7 +221,7 @@
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-3">Nenhum produto cadastrado</h3>
             <p class="text-gray-600 mb-6 max-w-md mx-auto">
-              Começe cadastrando seu primeiro produto para gerenciar seu estoque de forma
+              Começe cadastrando seu primeiro produto para gerenciar seu catálogo de forma
               inteligente
             </p>
             <Button
@@ -266,7 +257,6 @@ import { productService } from '@/services/product.service'
 
 defineEmits<{
   openCreateModal: []
-  openSellModal: []
   editProduct: [product: Product]
 }>()
 
@@ -278,7 +268,7 @@ const loading = ref(false)
 const loadProducts = async () => {
   loading.value = true
   try {
-    const response = await productService.getProducts(1, 1000)
+    const response = await productService.getProducts()
     products.value = response.products
   } catch {
     toast.add({
@@ -290,70 +280,6 @@ const loadProducts = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const getDaysUntilExpiration = (dateString: string) => {
-  const today = new Date()
-  const expirationDate = new Date(dateString)
-  const diffTime = expirationDate.getTime() - today.getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays < 0 ? 0 : diffDays
-}
-
-const getExpirationDateClass = (dateString: string) => {
-  const days = getDaysUntilExpiration(dateString)
-
-  if (days === 0) {
-    return 'text-red-600 font-bold'
-  } else if (days <= 3) {
-    return 'text-red-500 font-semibold'
-  } else if (days <= 7) {
-    return 'text-orange-500 font-semibold'
-  } else if (days <= 15) {
-    return 'text-yellow-600 font-medium'
-  }
-  return 'text-green-600'
-}
-
-const getExpirationStatusClass = (dateString: string) => {
-  const days = getDaysUntilExpiration(dateString)
-
-  if (days === 0) {
-    return 'bg-red-100 text-red-800'
-  } else if (days <= 3) {
-    return 'bg-red-100 text-red-700'
-  } else if (days <= 7) {
-    return 'bg-orange-100 text-orange-700'
-  } else if (days <= 15) {
-    return 'bg-yellow-100 text-yellow-700'
-  }
-  return 'bg-green-100 text-green-700'
-}
-
-const getExpirationStatusText = (dateString: string) => {
-  const days = getDaysUntilExpiration(dateString)
-
-  if (days === 0) {
-    return 'VENCEU'
-  } else if (days <= 3) {
-    return 'CRÍTICO'
-  } else if (days <= 7) {
-    return 'ATENÇÃO'
-  } else if (days <= 15) {
-    return 'MODERADO'
-  }
-  return 'OK'
-}
-
-const getQuantityBadgeClass = (quantity: number) => {
-  if (quantity <= 2) {
-    return 'bg-red-500'
-  } else if (quantity <= 5) {
-    return 'bg-orange-500'
-  } else if (quantity <= 10) {
-    return 'bg-yellow-500'
-  }
-  return 'bg-green-500'
 }
 
 const refreshTable = () => {

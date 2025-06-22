@@ -2,258 +2,70 @@ import type {
   Product,
   ProductCreateRequest,
   ProductUpdateRequest,
-  BarcodeVerificationResponse,
 } from '@/types/product'
-
-
-const getDateString = (daysFromToday: number): string => {
-  const date = new Date()
-  date.setDate(date.getDate() + daysFromToday)
-  return date.toISOString().split('T')[0]
-}
-
-const mockProducts: Product[] = [
-  {
-    id: '1',
-    name: 'Iogurte Natural',
-    brand: 'Danone',
-    quantity: 6,
-    expirationDate: getDateString(0), 
-    barcodeCode: '7891000100127',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-01-15T10:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'Pão de Forma',
-    brand: 'Wickbold',
-    quantity: 3,
-    expirationDate: getDateString(1), 
-    barcodeCode: '7891910000016',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-16T14:30:00Z',
-    updatedAt: '2024-01-16T14:30:00Z',
-  },
-  {
-    id: '3',
-    name: 'Queijo Mussarela',
-    brand: 'Tirolez',
-    quantity: 2,
-    expirationDate: getDateString(2), 
-    barcodeCode: '7896003701326',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-17T09:15:00Z',
-    updatedAt: '2024-01-17T09:15:00Z',
-  },
-  {
-    id: '4',
-    name: 'Presunto Fatiado',
-    brand: 'Sadia',
-    quantity: 4,
-    expirationDate: getDateString(3), 
-    barcodeCode: '7891164000014',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-18T16:45:00Z',
-    updatedAt: '2024-01-18T16:45:00Z',
-  },
-  {
-    id: '5',
-    name: 'Leite Integral',
-    brand: 'Nestlé',
-    quantity: 8,
-    expirationDate: getDateString(4), 
-    barcodeCode: '7896058251234',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-19T11:20:00Z',
-    updatedAt: '2024-01-19T11:20:00Z',
-  },
-  {
-    id: '6',
-    name: 'Margarina',
-    brand: 'Qualy',
-    quantity: 5,
-    expirationDate: getDateString(5), 
-    barcodeCode: '7891234567890',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-20T08:30:00Z',
-    updatedAt: '2024-01-20T08:30:00Z',
-  },
-  {
-    id: '7',
-    name: 'Requeijão',
-    brand: 'Catupiry',
-    quantity: 3,
-    expirationDate: getDateString(6), 
-    barcodeCode: '7891987654321',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-21T15:45:00Z',
-    updatedAt: '2024-01-21T15:45:00Z',
-  },
-  {
-    id: '8',
-    name: 'Açúcar Cristal',
-    brand: 'União',
-    quantity: 10,
-    expirationDate: getDateString(30), 
-    barcodeCode: '7891910000099',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-22T12:00:00Z',
-    updatedAt: '2024-01-22T12:00:00Z',
-  },
-  {
-    id: '9',
-    name: 'Arroz Branco',
-    brand: 'Tio João',
-    quantity: 15,
-    expirationDate: getDateString(60), 
-    barcodeCode: '7891164000099',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-23T10:30:00Z',
-    updatedAt: '2024-01-23T10:30:00Z',
-  },
-  {
-    id: '10',
-    name: 'Feijão Preto',
-    brand: 'Camil',
-    quantity: 12,
-    expirationDate: getDateString(90), 
-    barcodeCode: '7896058251999',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-24T14:15:00Z',
-    updatedAt: '2024-01-24T14:15:00Z',
-  },
-  
-  {
-    id: '11',
-    name: 'Cream Cheese',
-    brand: 'Philadelphia',
-    quantity: 4,
-    expirationDate: getDateString(8), 
-    barcodeCode: '7891234567811',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-25T09:00:00Z',
-    updatedAt: '2024-01-25T09:00:00Z',
-  },
-  {
-    id: '12',
-    name: 'Salsicha Viena',
-    brand: 'Perdigão',
-    quantity: 6,
-    expirationDate: getDateString(10), 
-    barcodeCode: '7891234567812',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-26T11:30:00Z',
-    updatedAt: '2024-01-26T11:30:00Z',
-  },
-  {
-    id: '13',
-    name: 'Bacon Fatiado',
-    brand: 'Seara',
-    quantity: 3,
-    expirationDate: getDateString(12), 
-    barcodeCode: '7891234567813',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-27T14:00:00Z',
-    updatedAt: '2024-01-27T14:00:00Z',
-  },
-  
-  {
-    id: '14',
-    name: 'Mortadela',
-    brand: 'Sadia',
-    quantity: 2,
-    expirationDate: getDateString(15), 
-    barcodeCode: '7891234567814',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-28T16:30:00Z',
-    updatedAt: '2024-01-28T16:30:00Z',
-  },
-  {
-    id: '15',
-    name: 'Linguiça Calabresa',
-    brand: 'Perdigão',
-    quantity: 5,
-    expirationDate: getDateString(18), 
-    barcodeCode: '7891234567815',
-    barcodeFormat: 'EAN_13',
-    createdAt: '2024-01-29T10:45:00Z',
-    updatedAt: '2024-01-29T10:45:00Z',
-  },
-]
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+import api from '@/lib/axios'
 
 export const productService = {
-  async getProducts(
-    page: number = 1,
-    limit: number = 10,
-  ): Promise<{ products: Product[]; total: number }> {
-    await delay(500)
-
-    const startIndex = (page - 1) * limit
-    const endIndex = startIndex + limit
-    const paginatedProducts = mockProducts.slice(startIndex, endIndex)
-
-    return {
-      products: paginatedProducts,
-      total: mockProducts.length,
+  async getProducts(): Promise<{ products: Product[]; total: number }> {
+    try {
+      const response = await api.get<Product[]>('/products')
+      return {
+        products: response.data,
+        total: response.data.length,
+      }
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error)
+      throw error
     }
   },
 
   async getProductById(id: string): Promise<Product | null> {
-    await delay(300)
-
-    const product = mockProducts.find((p) => p.id === id)
-    return product || null
+    try {
+      const response = await api.get<Product>(`/products/${id}`)
+      return response.data
+    } catch (error) {
+      console.error('Erro ao buscar produto por ID:', error)
+      return null
+    }
   },
 
-  async verifyBarcode(barcodeCode: string): Promise<BarcodeVerificationResponse> {
-    await delay(800)
-
-    const existingProduct = mockProducts.find((p) => p.barcodeCode === barcodeCode)
-
-    if (existingProduct) {
-      
-      const { expirationDate, quantity, ...productWithoutExpiration } = existingProduct
-      return {
-        exists: true,
-        product: productWithoutExpiration,
-      }
+  async getProductByBarcode(barcode: string): Promise<Product | null> {
+    try {
+      const response = await api.get<Product>(`/products/barcode/${barcode}`)
+      return response.data
+    } catch (error) {
+      console.error('Erro ao buscar produto por código de barras:', error)
+      return null
     }
-
-    return { exists: false }
   },
 
   async createProduct(productData: ProductCreateRequest): Promise<Product> {
-    await delay(600)
-
-    const newProduct: Product = {
-      id: (mockProducts.length + 1).toString(),
-      ...productData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+    try {
+      const response = await api.post<Product>('/products', productData)
+      return response.data
+    } catch (error) {
+      console.error('Erro ao criar produto:', error)
+      throw error
     }
-
-    mockProducts.push(newProduct)
-    return newProduct
   },
 
   async updateProduct(productData: ProductUpdateRequest): Promise<Product> {
-    await delay(500)
-
-    const index = mockProducts.findIndex((p) => p.id === productData.id)
-    if (index === -1) {
-      throw new Error('Produto não encontrado')
+    try {
+      const { id, ...updateData } = productData
+      const response = await api.patch<Product>(`/products/${id}`, updateData)
+      return response.data
+    } catch (error) {
+      console.error('Erro ao atualizar produto:', error)
+      throw error
     }
+  },
 
-    const updatedProduct: Product = {
-      ...mockProducts[index],
-      ...productData,
-      updatedAt: new Date().toISOString(),
+  async deleteProduct(id: string): Promise<void> {
+    try {
+      await api.delete(`/products/${id}`)
+    } catch (error) {
+      console.error('Erro ao deletar produto:', error)
+      throw error
     }
-
-    mockProducts[index] = updatedProduct
-    return updatedProduct
   },
 }
