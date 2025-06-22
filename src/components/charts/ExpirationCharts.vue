@@ -1,8 +1,10 @@
 <template>
   <div class="relative">
     <div class="absolute top-0 right-1/3 w-72 h-72 bg-primary-100/20 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-1/4 left-1/3 w-64 h-64 bg-secondary-100/15 rounded-full blur-2xl"></div>
-    
+    <div
+      class="absolute bottom-1/4 left-1/3 w-64 h-64 bg-secondary-100/15 rounded-full blur-2xl"
+    ></div>
+
     <div class="relative z-10 space-y-8">
       <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
         <div class="mb-6">
@@ -27,7 +29,8 @@
                 class="w-full lg:w-80"
                 :pt="{
                   root: 'w-full',
-                  input: 'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300'
+                  input:
+                    'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
                 }"
               />
               <div v-if="analytics?.weekRange" class="text-xs text-gray-500 mt-2 ml-6">
@@ -56,41 +59,65 @@
         </div>
         <div v-else-if="analytics">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <div class="absolute inset-0 bg-gradient-to-br from-primary-50/50 to-primary-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div
+              class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-primary-50/50 to-primary-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              ></div>
               <div class="relative">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <div
+                    class="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg"
+                  >
                     <i class="pi pi-clock text-white text-xl"></i>
                   </div>
                 </div>
-                <h3 class="text-2xl font-bold text-primary-600 mb-1">{{ analytics.productsExpiringThisWeek.length }}</h3>
+                <h3 class="text-2xl font-bold text-primary-600 mb-1">
+                  {{ analytics.productsExpiringThisWeek.length }}
+                </h3>
                 <p class="text-sm text-gray-600">Produtos vencendo no período</p>
               </div>
             </div>
 
-            <div class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <div class="absolute inset-0 bg-gradient-to-br from-secondary-50/50 to-secondary-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div
+              class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-secondary-50/50 to-secondary-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              ></div>
               <div class="relative">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-12 h-12 bg-gradient-to-r from-secondary-500 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <div
+                    class="w-12 h-12 bg-gradient-to-r from-secondary-500 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg"
+                  >
                     <i class="pi pi-box text-white text-xl"></i>
                   </div>
                 </div>
-                <h3 class="text-2xl font-bold text-secondary-600 mb-1">{{ analytics.totalQuantityExpiring }}</h3>
+                <h3 class="text-2xl font-bold text-secondary-600 mb-1">
+                  {{ analytics.totalQuantityExpiring }}
+                </h3>
                 <p class="text-sm text-gray-600">Unidades no total</p>
               </div>
             </div>
 
-            <div class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <div class="absolute inset-0 bg-gradient-to-br from-red-50/50 to-red-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div
+              class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-red-50/50 to-red-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              ></div>
               <div class="relative">
                 <div class="flex items-center justify-between mb-4">
-                  <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <div
+                    class="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg"
+                  >
                     <i class="pi pi-exclamation-triangle text-white text-xl"></i>
                   </div>
                 </div>
-                <h3 class="text-2xl font-bold text-red-600 mb-1">{{ analytics.urgentProducts.length }}</h3>
+                <h3 class="text-2xl font-bold text-red-600 mb-1">
+                  {{ analytics.urgentProducts.length }}
+                </h3>
                 <p class="text-sm text-gray-600">Produtos urgentes</p>
               </div>
             </div>
@@ -107,7 +134,10 @@
                 }}
                 no período selecionado
               </div>
-              <div v-if="analytics.urgentProducts.length > 0" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-100 to-orange-100 border border-red-200/50 rounded-full">
+              <div
+                v-if="analytics.urgentProducts.length > 0"
+                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-100 to-orange-100 border border-red-200/50 rounded-full"
+              >
                 <i class="pi pi-exclamation-triangle text-red-600 mr-2"></i>
                 <span class="text-red-700 font-semibold">
                   {{ analytics.urgentProducts.length }}
@@ -119,7 +149,9 @@
               </div>
             </div>
             <div v-else>
-              <div class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200/50 rounded-full">
+              <div
+                class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200/50 rounded-full"
+              >
                 <i class="pi pi-check-circle text-green-600 mr-2"></i>
                 <span class="text-green-700 font-semibold">
                   Nenhum produto vencendo no período selecionado
@@ -130,8 +162,13 @@
         </div>
       </div>
 
-      <div v-if="analytics?.productsExpiringThisWeek.length" class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
-        <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between mb-6">
+      <div
+        v-if="analytics?.productsExpiringThisWeek.length"
+        class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg"
+      >
+        <div
+          class="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between mb-6"
+        >
           <div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">Visualização dos Dados</h3>
             <p class="text-gray-600">
@@ -144,17 +181,21 @@
               icon="pi pi-chart-pie"
               label="Pizza"
               @click="chartType = 'pie'"
-              :class="chartType === 'pie' 
-                ? 'px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl shadow-lg border-none' 
-                : 'px-4 py-2 bg-white/80 text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300'"
+              :class="
+                chartType === 'pie'
+                  ? 'px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl shadow-lg border-none'
+                  : 'px-4 py-2 bg-white/80 text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300'
+              "
             />
             <Button
               icon="pi pi-chart-bar"
               label="Barras"
               @click="chartType = 'bar'"
-              :class="chartType === 'bar' 
-                ? 'px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl shadow-lg border-none' 
-                : 'px-4 py-2 bg-white/80 text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300'"
+              :class="
+                chartType === 'bar'
+                  ? 'px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl shadow-lg border-none'
+                  : 'px-4 py-2 bg-white/80 text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300'
+              "
             />
           </div>
         </div>
@@ -175,7 +216,10 @@
         </div>
       </div>
 
-      <div v-if="analytics?.productsExpiringThisWeek.length" class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+      <div
+        v-if="analytics?.productsExpiringThisWeek.length"
+        class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg"
+      >
         <div class="mb-6">
           <h3 class="text-xl font-bold text-gray-900 mb-2">Detalhes dos Produtos</h3>
           <p class="text-gray-600">Lista completa dos produtos que vencem no período selecionado</p>
@@ -187,8 +231,9 @@
             :key="item.product.id"
             class="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             :class="{
-              'border-red-300/50 bg-gradient-to-br from-red-50/80 to-red-100/50': item.isExpired || item.isExpiringSoon,
-              'border-orange-300/50 bg-gradient-to-br from-orange-50/80 to-orange-100/50': 
+              'border-red-300/50 bg-gradient-to-br from-red-50/80 to-red-100/50':
+                item.isExpired || item.isExpiringSoon,
+              'border-orange-300/50 bg-gradient-to-br from-orange-50/80 to-orange-100/50':
                 !item.isExpired && !item.isExpiringSoon && item.daysUntilExpiration <= 3,
               'border-gray-200/50': item.daysUntilExpiration > 3,
             }"
@@ -199,19 +244,20 @@
                 <p class="text-xs text-gray-600">{{ item.product.brand }}</p>
               </div>
               <div class="ml-3">
-                <span 
+                <span
                   class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold"
                   :class="{
                     'bg-red-100 text-red-800': item.product.quantity <= 2,
-                    'bg-orange-100 text-orange-800': item.product.quantity > 2 && item.product.quantity <= 5,
-                    'bg-green-100 text-green-800': item.product.quantity > 5
+                    'bg-orange-100 text-orange-800':
+                      item.product.quantity > 2 && item.product.quantity <= 5,
+                    'bg-green-100 text-green-800': item.product.quantity > 5,
                   }"
                 >
                   {{ item.product.quantity }}
                 </span>
               </div>
             </div>
-            
+
             <div class="flex items-center justify-between text-xs">
               <span class="text-gray-600">
                 {{ new Date(item.product.expirationDate).toLocaleDateString('pt-BR') }}
