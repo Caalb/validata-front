@@ -172,14 +172,14 @@
                 </div>
 
                 <div class="animate-fade-in" style="animation-delay: 0.4s">
-                  <label for="base_price" class="block text-sm font-semibold text-gray-700 mb-2">
+                  <label for="cost_price" class="block text-sm font-semibold text-gray-700 mb-2">
                     <i class="pi pi-dollar mr-2 text-primary-500"></i>
-                    Preço Base *
+                    Preço de Custo *
                   </label>
                   <div class="relative">
                     <InputNumber
-                      id="base_price"
-                      v-model="formData.base_price"
+                      id="cost_price"
+                      v-model="formData.cost_price"
                       :disabled="loading || (!!productFound && !isEdit)"
                       :min="0"
                       :min-fraction-digits="2"
@@ -193,17 +193,17 @@
                         input:
                           'w-full pl-4 pr-4 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
                       }"
-                      :inputClass="{ 'border-danger-300 bg-danger-50/50': errors.base_price }"
+                      :inputClass="{ 'border-danger-300 bg-danger-50/50': errors.cost_price }"
                     />
                     <div
-                      v-if="errors.base_price"
+                      v-if="errors.cost_price"
                       class="absolute inset-y-0 right-0 flex items-center pr-3"
                     >
                       <i class="pi pi-exclamation-triangle text-danger-400"></i>
                     </div>
                   </div>
-                  <small v-if="errors.base_price" class="text-danger-500 text-xs mt-1 block">{{
-                    errors.base_price
+                  <small v-if="errors.cost_price" class="text-danger-500 text-xs mt-1 block">{{
+                    errors.cost_price
                   }}</small>
                 </div>
 
@@ -339,7 +339,7 @@ const formData = ref({
   name: '',
   brand: '',
   category: '',
-  base_price: 0,
+  cost_price: 0,
   quantity: 1,
   expiration_date: '',
 })
@@ -357,7 +357,7 @@ const resetForm = () => {
     name: '',
     brand: '',
     category: '',
-    base_price: 0,
+    cost_price: 0,
     quantity: 1,
     expiration_date: '',
   }
@@ -371,7 +371,7 @@ const populateForm = (product: Product) => {
     name: product.name,
     brand: product.brand,
     category: product.category,
-    base_price: product.base_price / 100,
+    cost_price: (product.cost_price || product.base_price) / 100,
     quantity: formData.value.quantity,
     expiration_date: formData.value.expiration_date,
   }
@@ -446,8 +446,8 @@ const validateForm = (): boolean => {
       errors.value.category = 'Categoria é obrigatória'
     }
 
-    if (!formData.value.base_price || formData.value.base_price <= 0) {
-      errors.value.base_price = 'Preço base deve ser maior que zero'
+    if (!formData.value.cost_price || formData.value.cost_price <= 0) {
+      errors.value.cost_price = 'Preço de custo deve ser maior que zero'
     }
   }
 
@@ -466,7 +466,7 @@ const handleSubmit = async () => {
         name: formData.value.name,
         brand: formData.value.brand,
         category: formData.value.category,
-        base_price: Math.round(formData.value.base_price * 100),
+        cost_price: Math.round(formData.value.cost_price * 100),
       }
 
       const updateData: ProductUpdateRequest = {
@@ -495,7 +495,7 @@ const handleSubmit = async () => {
           name: formData.value.name,
           brand: formData.value.brand,
           category: formData.value.category,
-          base_price: Math.round(formData.value.base_price * 100),
+          cost_price: Math.round(formData.value.cost_price * 100),
         }
         const savedProduct = await productService.createProduct(productData as ProductCreateRequest)
         productId = savedProduct.id

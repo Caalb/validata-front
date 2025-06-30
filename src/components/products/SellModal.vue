@@ -506,8 +506,8 @@ const searchProduct = async () => {
   try {
     const productWithStock = await saleService.getProductByBarcode(barcodeInput.value.trim())
 
-    if (productWithStock && productWithStock.stocks) {
-      const availableStocks = productWithStock.stocks.filter((stock) => stock.quantity > 0)
+    if (productWithStock && productWithStock.availableStocks) {
+      const availableStocks = productWithStock.availableStocks.filter((stock) => stock.quantity > 0)
 
       if (availableStocks.length > 0) {
         const closestExpirationStock = availableStocks.reduce((closest, current) => {

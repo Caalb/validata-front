@@ -36,6 +36,7 @@ export const productService = {
   },
 
   async createProduct(productData: ProductCreateRequest): Promise<Product> {
+    console.log(productData)
     try {
       const response = await api.post<Product>('/products', productData)
       return response.data

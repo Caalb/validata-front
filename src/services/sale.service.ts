@@ -49,7 +49,7 @@ interface SalesAnalytics {
 }
 
 interface ProductWithStock extends Product {
-  stocks: Stock[]
+  availableStocks: Stock[]
 }
 
 export const saleService = {
@@ -192,10 +192,4 @@ export const saleService = {
   },
 }
 
-export type { 
-  Sale, 
-  SaleItem, 
-  CreateSaleRequest, 
-  SalesAnalytics, 
-  ProductWithStock 
-}
+export type { Sale, SaleItem, CreateSaleRequest, SalesAnalytics, ProductWithStock }

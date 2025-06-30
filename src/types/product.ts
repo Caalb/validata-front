@@ -4,6 +4,7 @@ export interface Product {
   brand: string
   category: string
   barcode: string
+  cost_price: number
   base_price: number
   sales_frequency: number
   created_at: Date
@@ -15,7 +16,7 @@ export interface ProductCreateRequest {
   barcode: string
   brand: string
   category: string
-  base_price: number
+  cost_price: number
 }
 
 export interface ProductUpdateRequest extends Partial<ProductCreateRequest> {

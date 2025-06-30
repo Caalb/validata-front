@@ -136,7 +136,7 @@
                     <div class="flex items-center space-x-2">
                       <i class="pi pi-dollar text-gray-400"></i>
                       <span class="font-semibold text-green-600">
-                        R$ {{ (product.base_price / 100).toFixed(2).replace('.', ',') }}
+                        R$ {{ (product.cost_price / 100).toFixed(2).replace('.', ',') }}
                       </span>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -183,7 +183,7 @@
                         <div class="flex items-center space-x-2">
                           <i class="pi pi-dollar text-gray-400"></i>
                           <span class="font-semibold text-green-600">
-                            R$ {{ (product.base_price / 100).toFixed(2).replace('.', ',') }}
+                            R$ {{ (product.cost_price / 100).toFixed(2).replace('.', ',') }}
                           </span>
                         </div>
 
