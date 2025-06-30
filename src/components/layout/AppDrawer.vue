@@ -15,8 +15,13 @@
     >
       <div class="drawer-header">
         <div class="flex items-center gap-3">
-          <i class="pi pi-shield text-2xl text-red-600"></i>
-          <span class="text-xl font-bold text-red-600">Validata</span>
+          <div class="w-40 h-12 flex justify-center items-center overflow-hidden">
+            <img
+              src="/logo-validata.png"
+              alt="Validata Logo"
+              class="h-24 object-contain scale-[1.1] mt-8"
+            />
+          </div>
         </div>
         <Button v-if="isMobile" icon="pi pi-times" text @click="closeDrawer" class="p-1" />
       </div>

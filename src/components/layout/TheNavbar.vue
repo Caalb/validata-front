@@ -4,8 +4,11 @@
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <div class="flex-shrink-0 flex items-center">
-            <i class="pi pi-shield text-2xl text-red-600 mr-2"></i>
-            <span class="text-xl font-bold text-red-600">Validata</span>
+            <img
+              src="/logo-validata.png"
+              alt="Validata Logo"
+              class="h-12 object-contain ml-2 mt-4 scale-[2]"
+            />
           </div>
         </div>
 

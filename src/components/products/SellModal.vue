@@ -325,9 +325,8 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Quagga, { type QuaggaJSResultObject } from '@ericblade/quagga2'
 import type { Stock } from '@/types/stock'
-import { productService } from '@/services/product.service'
-import { stockService } from '@/services/stock.service'
 import { saleService } from '@/services/sale.service'
+import { auth } from '@/lib/auth'
 
 interface Props {
   show: boolean
@@ -505,12 +504,10 @@ const searchProduct = async () => {
 
   searchingProduct.value = true
   try {
-    const products = await productService.getProducts()
-    const product = products.products.find((p) => p.barcode === barcodeInput.value.trim())
+    const productWithStock = await saleService.getProductByBarcode(barcodeInput.value.trim())
 
-    if (product) {
-      const stocks = await stockService.getStocksByProduct(product.id)
-      const availableStocks = stocks.filter((stock) => stock.quantity > 0)
+    if (productWithStock && productWithStock.stocks) {
+      const availableStocks = productWithStock.stocks.filter((stock) => stock.quantity > 0)
 
       if (availableStocks.length > 0) {
         const closestExpirationStock = availableStocks.reduce((closest, current) => {
@@ -519,7 +516,7 @@ const searchProduct = async () => {
           return currentDays < closestDays ? current : closest
         })
 
-        selectedProduct.value = { ...closestExpirationStock, product }
+        selectedProduct.value = { ...closestExpirationStock, product: productWithStock }
         sellQuantity.value = 1
         scannerMode.value = false
         manualMode.value = false
@@ -556,10 +553,32 @@ const confirmSale = async () => {
 
   processingSale.value = true
   try {
-    await saleService.sellProduct({
-      productId: selectedProduct.value.productId,
-      quantity: sellQuantity.value,
-    })
+    const user = auth.getUser()
+    if (!user?.id) {
+      toast.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Usuário não encontrado. Faça login novamente.',
+        life: 3000,
+      })
+      return
+    }
+
+    const saleData = {
+      userId: user.id,
+      items: [
+        {
+          productId: selectedProduct.value.productId,
+          stockId: selectedProduct.value.id,
+          quantity: sellQuantity.value,
+          unitPrice: (selectedProduct.value.product?.base_price || 0) / 100,
+        },
+      ],
+      totalValue: ((selectedProduct.value.product?.base_price || 0) / 100) * sellQuantity.value,
+      saleDate: new Date(),
+    }
+
+    await saleService.createSale(saleData)
 
     toast.add({
       severity: 'success',

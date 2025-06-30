@@ -359,7 +359,7 @@ const handleSubmit = async () => {
       localStorage.setItem('token', response.access_token)
       localStorage.setItem('user', JSON.stringify(response.user))
 
-      toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Login realizado com sucesso!' })
+      toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Login realizado com sucesso!', life: 3000 })
       router.push('/app')
     } else {
       const response = await authService.register({
@@ -375,6 +375,7 @@ const handleSubmit = async () => {
         severity: 'success',
         summary: 'Sucesso',
         detail: 'Cadastro realizado com sucesso!',
+        life: 3000,
       })
       router.push('/app')
     }
@@ -386,6 +387,7 @@ const handleSubmit = async () => {
       severity: 'error',
       summary: 'Erro',
       detail: axiosError.response?.data?.message || 'Erro ao realizar operação',
+      life: 5000,
     })
   } finally {
     loading.value = false

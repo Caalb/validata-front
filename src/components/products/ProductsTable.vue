@@ -15,6 +15,24 @@
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
           <Button
+            v-show="false"
+            @click="handleSeedProducts"
+            :loading="seedLoading"
+            severity="secondary"
+            size="large"
+            icon="pi pi-database"
+            class="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-none shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+          >
+            Seed Produtos
+          </Button>
+          <Button
+            :label="$attrs.isMobile ? '' : 'Vender Produto'"
+            icon="pi pi-shopping-cart"
+            @click="$emit('openSellModal')"
+            class="px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border-none self-start lg:self-auto"
+            :size="$attrs.isMobile ? 'small' : 'large'"
+          />
+          <Button
             :label="$attrs.isMobile ? '' : 'Cadastrar Produto'"
             icon="pi pi-plus"
             @click="$emit('openCreateModal')"
@@ -118,7 +136,7 @@
                     <div class="flex items-center space-x-2">
                       <i class="pi pi-dollar text-gray-400"></i>
                       <span class="font-semibold text-green-600">
-                        R$ {{ product.base_price.toFixed(2).replace('.', ',') }}
+                        R$ {{ (product.base_price / 100).toFixed(2).replace('.', ',') }}
                       </span>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -165,7 +183,7 @@
                         <div class="flex items-center space-x-2">
                           <i class="pi pi-dollar text-gray-400"></i>
                           <span class="font-semibold text-green-600">
-                            R$ {{ product.base_price.toFixed(2).replace('.', ',') }}
+                            R$ {{ (product.base_price / 100).toFixed(2).replace('.', ',') }}
                           </span>
                         </div>
 
@@ -264,6 +282,7 @@ const toast = useToast()
 
 const products = ref<Product[]>([])
 const loading = ref(false)
+const seedLoading = ref(false)
 
 const loadProducts = async () => {
   loading.value = true
@@ -279,6 +298,32 @@ const loadProducts = async () => {
     })
   } finally {
     loading.value = false
+  }
+}
+
+const handleSeedProducts = async () => {
+  try {
+    seedLoading.value = true
+    const result = await productService.seedProducts()
+
+    toast.add({
+      severity: 'success',
+      summary: 'Sucesso!',
+      detail: result.message,
+      life: 5000,
+    })
+
+    await loadProducts()
+  } catch (error) {
+    console.error('Erro ao fazer seed:', error)
+    toast.add({
+      severity: 'error',
+      summary: 'Erro!',
+      detail: 'Falha ao criar produtos de exemplo. Verifique se o backend está funcionando.',
+      life: 5000,
+    })
+  } finally {
+    seedLoading.value = false
   }
 }
 

@@ -33,9 +33,8 @@
                     'w-full pl-4 pr-12 py-3 rounded-2xl border-2 border-gray-200/50 bg-white/50 backdrop-blur-sm focus:border-primary-300 focus:bg-white/80 transition-all duration-300',
                 }"
               />
-              <div v-if="analytics?.weekRange" class="text-xs text-gray-500 mt-2 ml-6">
-                {{ analytics.weekRange.start.toLocaleDateString('pt-BR') }} até
-                {{ analytics.weekRange.end.toLocaleDateString('pt-BR') }}
+              <div v-if="selectedWeek" class="text-xs text-gray-500 mt-2 ml-6">
+                Período: {{ formatDateRange(selectedWeek.start, selectedWeek.end) }}
               </div>
             </div>
           </div>
@@ -341,6 +340,16 @@ const getDaysText = (days: number): string => {
     return 'Vence amanhã'
   } else {
     return `${days} dias restantes`
+  }
+}
+
+const formatDateRange = (start: Date, end: Date): string => {
+  try {
+    const startFormatted = start.toLocaleDateString('pt-BR')
+    const endFormatted = end.toLocaleDateString('pt-BR')
+    return `${startFormatted} até ${endFormatted}`
+  } catch (error) {
+    return 'Data inválida'
   }
 }
 

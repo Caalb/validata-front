@@ -87,9 +87,14 @@ const scrollTo = (id: string) => {
 const handleLogin = async (credentials: { email: string; password: string }) => {
   try {
     console.log('Login attempt:', credentials)
-    toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Login realizado com sucesso!' })
+    toast.add({
+      severity: 'success',
+      summary: 'Sucesso',
+      detail: 'Login realizado com sucesso!',
+      life: 3000,
+    })
   } catch {
-    toast.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao realizar login' })
+    toast.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao realizar login', life: 5000 })
   }
 }
 
@@ -100,9 +105,15 @@ const handleRegister = async (data: { name: string; email: string; password: str
       severity: 'success',
       summary: 'Sucesso',
       detail: 'Cadastro realizado com sucesso!',
+      life: 3000,
     })
   } catch {
-    toast.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao realizar cadastro' })
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Erro ao realizar cadastro',
+      life: 5000,
+    })
   }
 }
 </script>

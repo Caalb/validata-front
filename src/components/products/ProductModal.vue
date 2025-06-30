@@ -371,7 +371,7 @@ const populateForm = (product: Product) => {
     name: product.name,
     brand: product.brand,
     category: product.category,
-    base_price: product.base_price,
+    base_price: product.base_price / 100,
     quantity: formData.value.quantity,
     expiration_date: formData.value.expiration_date,
   }
@@ -466,7 +466,7 @@ const handleSubmit = async () => {
         name: formData.value.name,
         brand: formData.value.brand,
         category: formData.value.category,
-        base_price: formData.value.base_price,
+        base_price: Math.round(formData.value.base_price * 100),
       }
 
       const updateData: ProductUpdateRequest = {
@@ -495,7 +495,7 @@ const handleSubmit = async () => {
           name: formData.value.name,
           brand: formData.value.brand,
           category: formData.value.category,
-          base_price: formData.value.base_price,
+          base_price: Math.round(formData.value.base_price * 100),
         }
         const savedProduct = await productService.createProduct(productData as ProductCreateRequest)
         productId = savedProduct.id

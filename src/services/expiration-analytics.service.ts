@@ -35,7 +35,8 @@ class ExpirationAnalyticsService {
       const weekStart = new Date(today)
       const currentDay = today.getDay()
 
-      const daysToAdd = weekOffset * 7 - currentDay
+      const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay
+      const daysToAdd = weekOffset * 7 + mondayOffset
       weekStart.setDate(today.getDate() + daysToAdd)
       weekStart.setHours(0, 0, 0, 0)
 
@@ -49,22 +50,26 @@ class ExpirationAnalyticsService {
       } else if (weekOffset === 1) {
         label = 'Próxima Semana'
       } else {
-        const startFormatted = weekStart.toLocaleDateString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-        })
-        const endFormatted = weekEnd.toLocaleDateString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-        })
-        label = `${startFormatted} - ${endFormatted}`
+        try {
+          const startFormatted = weekStart.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+          })
+          const endFormatted = weekEnd.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+          })
+          label = `${startFormatted} - ${endFormatted}`
+        } catch (error) {
+          label = `Semana ${weekOffset + 1}`
+        }
       }
 
       options.push({
         label,
         value: `week-${weekOffset}`,
-        start: weekStart,
-        end: weekEnd,
+        start: new Date(weekStart),
+        end: new Date(weekEnd),
       })
     }
 
@@ -79,7 +84,9 @@ class ExpirationAnalyticsService {
     const currentDay = today.getDay()
 
     const start = new Date(today)
-    const daysToAdd = weekOffset * 7 - currentDay
+    // Ajustar para começar na segunda-feira
+    const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay
+    const daysToAdd = weekOffset * 7 + mondayOffset
     start.setDate(today.getDate() + daysToAdd)
     start.setHours(0, 0, 0, 0)
 
@@ -87,7 +94,7 @@ class ExpirationAnalyticsService {
     end.setDate(start.getDate() + 6)
     end.setHours(23, 59, 59, 999)
 
-    return { start, end }
+    return { start: new Date(start), end: new Date(end) }
   }
 
   /**
