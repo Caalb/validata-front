@@ -200,13 +200,13 @@
         </div>
 
         <div class="chart-wrapper bg-white/50 rounded-2xl p-6 border border-white/30">
-          <PieChart
+          <ExpirationPieChart
             v-if="chartType === 'pie'"
             ref="pieChartRef"
             :week-offset="getWeekOffset()"
             :key="`pie-chart-${selectedWeek?.value}`"
           />
-          <BarChart
+          <ExpirationBarChart
             v-else-if="chartType === 'bar'"
             ref="barChartRef"
             :week-offset="getWeekOffset()"
@@ -239,7 +239,9 @@
           >
             <div class="flex items-start justify-between mb-3">
               <div class="flex-1 min-w-0">
-                <h4 class="font-semibold text-gray-900 truncate mb-1">{{ item.stock.product?.name || 'Produto' }}</h4>
+                <h4 class="font-semibold text-gray-900 truncate mb-1">
+                  {{ item.stock.product?.name || 'Produto' }}
+                </h4>
                 <p class="text-xs text-gray-600">{{ item.stock.product?.brand || 'Sem marca' }}</p>
               </div>
               <div class="ml-3">
@@ -285,13 +287,13 @@ import { ref, onMounted, watch } from 'vue'
 import Button from 'primevue/button'
 import Dropdown from 'primevue/dropdown'
 import ProgressSpinner from 'primevue/progressspinner'
-import PieChart from './PieChart.vue'
-import BarChart from './BarChart.vue'
+import ExpirationPieChart from './ExpirationPieChart.vue'
+import ExpirationBarChart from './ExpirationBarChart.vue'
 import {
-  expirationAnalyticsService,
+  expiringStockService,
   type WeeklyExpirationData,
   type WeekOption,
-} from '@/services/expiration-analytics.service'
+} from '@/services/expiring-stock.service'
 
 const chartType = ref<'pie' | 'bar'>('pie')
 const loading = ref(true)
@@ -299,14 +301,14 @@ const analytics = ref<WeeklyExpirationData | null>(null)
 const selectedWeek = ref<WeekOption | null>(null)
 const weekOptions = ref<WeekOption[]>([])
 
-const pieChartRef = ref<InstanceType<typeof PieChart>>()
-const barChartRef = ref<InstanceType<typeof BarChart>>()
+const pieChartRef = ref<InstanceType<typeof ExpirationPieChart>>()
+const barChartRef = ref<InstanceType<typeof ExpirationBarChart>>()
 
 const loadAnalytics = async () => {
   try {
     loading.value = true
     const weekOffset = getWeekOffset()
-    analytics.value = await expirationAnalyticsService.getWeeklyExpirationAnalytics(weekOffset)
+    analytics.value = await expiringStockService.getWeeklyExpirationAnalytics(weekOffset)
   } catch (error) {
     console.error('Error loading expiration analytics:', error)
   } finally {
@@ -360,7 +362,7 @@ watch(selectedWeek, async () => {
 })
 
 onMounted(async () => {
-  weekOptions.value = expirationAnalyticsService.getWeekOptions()
+  weekOptions.value = expiringStockService.getWeekOptions()
   selectedWeek.value = weekOptions.value[0]
 
   await loadAnalytics()

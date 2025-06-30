@@ -4,13 +4,19 @@
     <div class="relative">
       <!-- Background gradients -->
       <div class="absolute top-0 right-1/4 w-64 h-64 bg-primary-100/20 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-0 left-1/4 w-48 h-48 bg-secondary-100/15 rounded-full blur-2xl"></div>
+      <div
+        class="absolute bottom-0 left-1/4 w-48 h-48 bg-secondary-100/15 rounded-full blur-2xl"
+      ></div>
 
       <div class="relative z-10">
         <!-- Header -->
-        <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-6 lg:mb-8 gap-4">
+        <div
+          class="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-6 lg:mb-8 gap-4"
+        >
           <div>
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Análise de Vencimentos</h2>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              Análise de Vencimentos
+            </h2>
             <p class="text-gray-600 text-sm md:text-base">
               Monitore produtos próximos ao vencimento e tome ações preventivas
             </p>
@@ -36,11 +42,15 @@
 
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+          <div
+            class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg"
+          >
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-gray-600 text-sm font-medium">Total Vencendo</p>
-                <p class="text-2xl font-bold text-blue-600">{{ analytics?.totalQuantityExpiring || 0 }}</p>
+                <p class="text-2xl font-bold text-blue-600">
+                  {{ analytics?.totalQuantityExpiring || 0 }}
+                </p>
               </div>
               <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <i class="pi pi-calendar text-blue-600 text-xl"></i>
@@ -48,11 +58,15 @@
             </div>
           </div>
 
-          <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+          <div
+            class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg"
+          >
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-gray-600 text-sm font-medium">Produtos Urgentes</p>
-                <p class="text-2xl font-bold text-red-600">{{ analytics?.urgentProducts?.length || 0 }}</p>
+                <p class="text-2xl font-bold text-red-600">
+                  {{ analytics?.urgentProducts?.length || 0 }}
+                </p>
               </div>
               <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
                 <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
@@ -60,11 +74,15 @@
             </div>
           </div>
 
-          <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+          <div
+            class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg"
+          >
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-gray-600 text-sm font-medium">Lotes Afetados</p>
-                <p class="text-2xl font-bold text-orange-600">{{ analytics?.productsExpiringThisWeek?.length || 0 }}</p>
+                <p class="text-2xl font-bold text-orange-600">
+                  {{ analytics?.productsExpiringThisWeek?.length || 0 }}
+                </p>
               </div>
               <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
                 <i class="pi pi-box text-orange-600 text-xl"></i>
@@ -72,7 +90,9 @@
             </div>
           </div>
 
-          <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+          <div
+            class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg"
+          >
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-gray-600 text-sm font-medium">Período</p>
@@ -91,8 +111,10 @@
         <ExpirationCharts :weekOffset="selectedWeekOffset" />
 
         <!-- Urgent Actions Required -->
-        <div v-if="analytics?.urgentProducts && analytics.urgentProducts.length > 0" 
-             class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-red-200/50 shadow-lg mt-6">
+        <div
+          v-if="analytics?.urgentProducts && analytics.urgentProducts.length > 0"
+          class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-red-200/50 shadow-lg mt-6"
+        >
           <div class="flex items-center gap-3 mb-4">
             <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
               <i class="pi pi-exclamation-triangle text-red-600"></i>
@@ -114,13 +136,15 @@
                   <h4 class="font-semibold text-gray-900 truncate">
                     {{ item.stock.product?.name || 'Produto' }}
                   </h4>
-                  <p class="text-xs text-gray-600">{{ item.stock.product?.brand || 'Sem marca' }}</p>
+                  <p class="text-xs text-gray-600">
+                    {{ item.stock.product?.brand || 'Sem marca' }}
+                  </p>
                 </div>
                 <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                   {{ item.stock.quantity }}
                 </span>
               </div>
-              
+
               <div class="flex items-center justify-between text-xs">
                 <span class="text-gray-600">
                   {{ formatDate(item.stock.expiration_date) }}
@@ -136,10 +160,14 @@
         </div>
 
         <!-- Weekly Summary Table -->
-        <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg mt-6">
+        <div
+          class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg mt-6"
+        >
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold text-gray-900">Resumo Semanal</h3>
-            <div class="flex items-center gap-2 text-sm text-gray-600 bg-white/50 px-3 py-2 rounded-lg">
+            <div
+              class="flex items-center gap-2 text-sm text-gray-600 bg-white/50 px-3 py-2 rounded-lg"
+            >
               <i class="pi pi-info-circle"></i>
               {{ analytics?.productsExpiringThisWeek?.length || 0 }} lotes vencendo
             </div>
@@ -160,12 +188,18 @@
               <Column field="stock.product.name" header="Produto" sortable>
                 <template #body="{ data }">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                    <div
+                      class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center"
+                    >
                       <i class="pi pi-box text-primary-600"></i>
                     </div>
                     <div>
-                      <p class="font-semibold text-gray-900">{{ data.stock.product?.name || 'Produto' }}</p>
-                      <p class="text-sm text-gray-600">{{ data.stock.product?.brand || 'Sem marca' }}</p>
+                      <p class="font-semibold text-gray-900">
+                        {{ data.stock.product?.name || 'Produto' }}
+                      </p>
+                      <p class="text-sm text-gray-600">
+                        {{ data.stock.product?.brand || 'Sem marca' }}
+                      </p>
                     </div>
                   </div>
                 </template>
@@ -175,7 +209,13 @@
                 <template #body="{ data }">
                   <Badge
                     :value="data.stock.quantity.toString()"
-                    :severity="data.stock.quantity <= 5 ? 'danger' : data.stock.quantity <= 20 ? 'warning' : 'success'"
+                    :severity="
+                      data.stock.quantity <= 5
+                        ? 'danger'
+                        : data.stock.quantity <= 20
+                          ? 'warning'
+                          : 'success'
+                    "
                     class="px-3 py-1 rounded-full font-semibold"
                   />
                 </template>
@@ -203,7 +243,8 @@
                       class="w-3 h-3 rounded-full"
                       :class="{
                         'bg-red-500': data.isExpired || data.isExpiringSoon,
-                        'bg-orange-500': !data.isExpired && !data.isExpiringSoon && data.daysUntilExpiration <= 3,
+                        'bg-orange-500':
+                          !data.isExpired && !data.isExpiringSoon && data.daysUntilExpiration <= 3,
                         'bg-green-500': data.daysUntilExpiration > 3,
                       }"
                     ></div>
@@ -228,7 +269,10 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Badge from 'primevue/badge'
 import ExpirationCharts from '@/components/charts/ExpirationCharts.vue'
-import { expirationAnalyticsService, type WeeklyExpirationData } from '@/services/expiration-analytics.service'
+import {
+  expiringStockService,
+  type WeeklyExpirationData,
+} from '@/services/expiring-stock.service'
 
 // Data
 const loading = ref(false)
@@ -236,10 +280,10 @@ const selectedWeek = ref('0')
 const analytics = ref<WeeklyExpirationData | null>(null)
 
 // Computed
-const selectedWeekOffset = computed(() => parseInt(selectedWeek.value))
+const selectedWeekOffset = computed(() => parseInt(selectedWeek.value || '0'))
 
 const weekOptions = computed(() => {
-  return expirationAnalyticsService.getWeekOptions().map(option => ({
+  return expiringStockService.getWeekOptions().map((option) => ({
     label: option.label,
     value: option.value,
   }))
@@ -249,7 +293,9 @@ const weekOptions = computed(() => {
 const loadAnalytics = async () => {
   loading.value = true
   try {
-    analytics.value = await expirationAnalyticsService.getWeeklyExpirationAnalytics(selectedWeekOffset.value)
+    analytics.value = await expiringStockService.getWeeklyExpirationAnalytics(
+      selectedWeekOffset.value,
+    )
   } catch (error) {
     console.error('Erro ao carregar análise de vencimentos:', error)
   } finally {

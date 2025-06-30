@@ -287,7 +287,7 @@ import Paginator from 'primevue/paginator'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, type ChartConfiguration } from 'chart.js'
 import type { Stock } from '@/types/stock'
 import { stockService } from '@/services/stock.service'
-import { expirationAnalyticsService } from '@/services/expiration-analytics.service'
+import { expiringStockService } from '@/services/expiring-stock.service'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -534,7 +534,7 @@ const updateExpirationChart = async () => {
 
   try {
     // Get expiration data for this week
-    const pieChartData = await expirationAnalyticsService.getPieChartData(0)
+    const pieChartData = await expiringStockService.getPieChartData(0)
 
     if (pieChartData.labels.length === 0) {
       // No data to show
