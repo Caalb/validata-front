@@ -230,15 +230,15 @@
               </template>
             </Column>
 
-            <Column field="expirationDate" header="Validade" sortable>
+            <Column field="expiration_date" header="Validade" sortable>
               <template #body="{ data }">
                 <div class="text-center">
                   <p class="font-medium text-gray-900">
-                    {{ formatDate(data.expirationDate) }}
+                    {{ formatDate(data.expiration_date) }}
                   </p>
                   <Badge
-                    :value="getExpirationStatus(data.expirationDate).label"
-                    :severity="getExpirationStatus(data.expirationDate).severity"
+                    :value="getExpirationStatus(data.expiration_date).label"
+                    :severity="getExpirationStatus(data.expiration_date).severity"
                     class="mt-1 px-2 py-1 rounded-full text-xs font-semibold"
                   />
                 </div>
@@ -359,7 +359,7 @@ const filteredStocks = computed(() => {
     today.setHours(0, 0, 0, 0)
 
     filtered = filtered.filter((stock) => {
-      const expDate = new Date(stock.expirationDate)
+      const expDate = new Date(stock.expiration_date)
       expDate.setHours(0, 0, 0, 0)
       const diffDays = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
@@ -416,7 +416,7 @@ const summary = computed(() => {
     totalBatches: allStocks.value.length,
     totalQuantity: allStocks.value.reduce((sum, stock) => sum + stock.quantity, 0),
     expiringThisWeek: allStocks.value.filter((stock) => {
-      const expDate = new Date(stock.expirationDate)
+      const expDate = new Date(stock.expiration_date)
       return expDate >= today && expDate <= oneWeekFromNow
     }).length,
     lowStock: allStocks.value.filter((stock) => stock.quantity <= 5).length,
@@ -607,7 +607,10 @@ const onPageChange = (event: { first: number; page: number }) => {
 }
 
 const formatDate = (date: string | Date): string => {
-  return new Date(date).toLocaleDateString('pt-BR')
+  if (!date) return '-'
+  const dateObj = new Date(date)
+  if (isNaN(dateObj.getTime())) return '-'
+  return dateObj.toLocaleDateString('pt-BR')
 }
 
 const getCategorySeverity = (category?: string): string => {
