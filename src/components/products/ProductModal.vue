@@ -518,6 +518,21 @@ const handleSubmit = async () => {
         life: 3000,
       })
 
+      // Emitir evento para atualizar a listagem
+      if (productFound.value) {
+        emit('productSaved', productFound.value)
+      } else {
+        // Buscar o produto recém-criado para emitir o evento
+        try {
+          const createdProduct = await productService.getProductByBarcode(formData.value.barcode)
+          if (createdProduct) {
+            emit('productSaved', createdProduct)
+          }
+        } catch (e) {
+          console.error('Erro ao buscar produto criado:', e)
+        }
+      }
+
       emit('update:visible', false)
     }
   } catch (error) {

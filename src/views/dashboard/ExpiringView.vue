@@ -269,10 +269,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Badge from 'primevue/badge'
 import ExpirationCharts from '@/components/charts/ExpirationCharts.vue'
-import {
-  expiringStockService,
-  type WeeklyExpirationData,
-} from '@/services/expiring-stock.service'
+import { expiringStockService, type WeeklyExpirationData } from '@/services/expiring-stock.service'
 
 // Data
 const loading = ref(false)

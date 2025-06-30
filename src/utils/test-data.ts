@@ -10,35 +10,35 @@ const testProducts: ProductCreateRequest[] = [
     barcode: '7891234567890',
     brand: 'Marca A',
     category: 'Alimentos',
-    base_price: 350
+    cost_price: 350
   },
   {
     name: 'Refrigerante Cola',
     barcode: '7891234567891',
     brand: 'Marca B',
     category: 'Bebidas',
-    base_price: 400
+    cost_price: 400
   },
   {
     name: 'Detergente Líquido',
     barcode: '7891234567892',
     brand: 'Marca C',
     category: 'Limpeza',
-    base_price: 250
+    cost_price: 250
   },
   {
     name: 'Shampoo',
     barcode: '7891234567893',
     brand: 'Marca D',
     category: 'Higiene',
-    base_price: 890
+    cost_price: 890
   },
   {
     name: 'Iogurte Natural',
     barcode: '7891234567894',
     brand: 'Marca E',
     category: 'Alimentos',
-    base_price: 180
+    cost_price: 180
   }
 ]
 

@@ -1,9 +1,9 @@
 import api from '@/lib/axios'
-import type { 
-  ExpiringStockItem, 
-  ExpiringProduct, 
-  WeeklyExpirationData, 
-  WeekOption 
+import type {
+  ExpiringStockItem,
+  ExpiringProduct,
+  WeeklyExpirationData,
+  WeekOption,
 } from '@/types/expiring-stock'
 
 class ExpiringStockService {
@@ -109,10 +109,7 @@ class ExpiringStockService {
   /**
    * Check if a product expires within a specific week
    */
-  private isExpiringInWeek(
-    expirationDate: string,
-    weekRange: { start: Date; end: Date },
-  ): boolean {
+  private isExpiringInWeek(expirationDate: string, weekRange: { start: Date; end: Date }): boolean {
     const expDate = new Date(expirationDate)
     return expDate >= weekRange.start && expDate <= weekRange.end
   }
