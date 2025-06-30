@@ -20,6 +20,8 @@ export interface ProductWithStock {
   category: string
   basePrice: number
   basePriceInBRL: number
+  costPrice: number
+  costPriceInBRL: number
   availableStocks: Stock[]
   hasDiscounts: boolean
   lowestPrice: number

@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
   <Dialog
     :visible="show"
@@ -245,8 +246,12 @@
                     </p>
                     <div class="flex items-center space-x-4 text-xs text-gray-500">
                       <span>Código: {{ barcodeInput || 'N/A' }}</span>
-                      <span :class="getExpirationDateClass(selectedStock?.expirationDate || new Date())">
-                        Vence em {{ getDaysUntilExpiration(selectedStock?.expirationDate || new Date()) }} dias
+                      <span
+                        :class="getExpirationDateClass(selectedStock?.expirationDate || new Date())"
+                      >
+                        Vence em
+                        {{ getDaysUntilExpiration(selectedStock?.expirationDate || new Date()) }}
+                        dias
                       </span>
                     </div>
                   </div>
@@ -254,7 +259,10 @@
               </div>
 
               <!-- Seleção de estoque -->
-              <div v-if="availableStocks.length > 1" class="bg-gradient-to-r from-blue-50 to-sky-50 rounded-2xl p-4 border border-blue-200/50 mb-6">
+              <div
+                v-if="availableStocks.length > 1"
+                class="bg-gradient-to-r from-blue-50 to-sky-50 rounded-2xl p-4 border border-blue-200/50 mb-6"
+              >
                 <h5 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                   <i class="pi pi-warehouse mr-2 text-blue-500"></i>
                   Selecionar Estoque
@@ -269,23 +277,34 @@
                       'p-3 rounded-xl border-2 cursor-pointer transition-all duration-200',
                       (selectedStock?.stockId || selectedStock?.id) === (stock.stockId || stock.id)
                         ? 'border-blue-500 bg-blue-100/50'
-                        : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/30'
+                        : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/30',
                     ]"
                   >
                     <div class="flex items-center justify-between">
                       <div class="flex-1">
                         <div class="flex items-center space-x-2">
-                          <div class="w-3 h-3 rounded-full" :class="[
-                            (selectedStock?.stockId || selectedStock?.id) === (stock.stockId || stock.id) ? 'bg-blue-500' : 'bg-gray-300'
-                          ]"></div>
+                          <div
+                            class="w-3 h-3 rounded-full"
+                            :class="[
+                              (selectedStock?.stockId || selectedStock?.id) ===
+                              (stock.stockId || stock.id)
+                                ? 'bg-blue-500'
+                                : 'bg-gray-300',
+                            ]"
+                          ></div>
                           <span class="text-sm font-medium text-gray-900">
                             Lote: {{ stock.id?.slice(-6) || 'N/A' }}
                           </span>
-                          <span class="text-xs px-2 py-1 rounded-full" :class="[
-                            stock.quantity > 10 ? 'bg-green-100 text-green-800' :
-                            stock.quantity > 5 ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
-                          ]">
+                          <span
+                            class="text-xs px-2 py-1 rounded-full"
+                            :class="[
+                              stock.quantity > 10
+                                ? 'bg-green-100 text-green-800'
+                                : stock.quantity > 5
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800',
+                            ]"
+                          >
                             {{ stock.quantity }} unid.
                           </span>
                         </div>
@@ -300,7 +319,9 @@
 
               <div class="space-y-4 mb-6">
                 <!-- Seção de preços -->
-                <div class="bg-gradient-to-r from-blue-50 to-sky-50 rounded-2xl p-4 border border-blue-200/50">
+                <div
+                  class="bg-gradient-to-r from-blue-50 to-sky-50 rounded-2xl p-4 border border-blue-200/50"
+                >
                   <h5 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                     <i class="pi pi-dollar mr-2 text-blue-500"></i>
                     Preço de Venda
@@ -317,14 +338,14 @@
                     <div class="text-center">
                       <p class="text-xs text-gray-600 mb-1">Preço de Venda</p>
                       <div class="text-2xl font-bold text-green-600">
-                        <p class="w-full text-center text-2xl font-bold text-green-600 border-2 border-green-200 rounded-lg p-2">
+                        <p
+                          class="w-full text-center text-2xl font-bold text-green-600 border-2 border-green-200 rounded-lg p-2"
+                        >
                           {{ (salePrice / 100).toFixed(2) }}
                         </p>
                       </div>
                     </div>
                   </div>
-
-
                 </div>
 
                 <div>
@@ -354,7 +375,9 @@
                       size="small"
                       outlined
                       :disabled="sellQuantity >= (selectedStock?.quantity || 1)"
-                      @click="sellQuantity = Math.min(selectedStock?.quantity || 1, sellQuantity + 1)"
+                      @click="
+                        sellQuantity = Math.min(selectedStock?.quantity || 1, sellQuantity + 1)
+                      "
                       class="w-10 h-10 border-2 border-green-300 text-green-600 hover:bg-green-50 rounded-xl"
                     />
                   </div>
@@ -364,7 +387,9 @@
                 </div>
 
                 <!-- Total da venda -->
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 border border-green-200/50">
+                <div
+                  class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 border border-green-200/50"
+                >
                   <h5 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                     <i class="pi pi-calculator mr-2 text-green-500"></i>
                     Total da Venda
@@ -373,9 +398,7 @@
                   <div class="grid grid-cols-3 gap-4">
                     <div class="text-center">
                       <p class="text-xs text-gray-600 mb-1">Quantidade</p>
-                      <p class="text-lg font-semibold text-gray-800">
-                        {{ sellQuantity }}x
-                      </p>
+                      <p class="text-lg font-semibold text-gray-800">{{ sellQuantity }}x</p>
                     </div>
 
                     <div class="text-center">
@@ -392,8 +415,6 @@
                       </p>
                     </div>
                   </div>
-
-
                 </div>
               </div>
 
@@ -472,20 +493,17 @@ const sellQuantityString = computed({
   },
 })
 
-
-
-
-
-const costPrice = computed(() => 0)
-
-
-
-const totalAmount = computed(() => {
-    return (salePrice.value / 100) * sellQuantity.value
+const costPrice = computed(() => {
+  return selectedProduct.value?.costPrice || 0
 })
 
+const costPriceInBRL = computed(() => {
+  return selectedProduct.value?.costPriceInBRL || 0
+})
 
-
+const totalAmount = computed(() => {
+  return (salePrice.value / 100) * sellQuantity.value
+})
 
 const updateSellQuantity = (event: Event) => {
   const target = event.target as HTMLInputElement
@@ -636,7 +654,7 @@ const searchProduct = async () => {
   searchingProduct.value = true
   try {
     const productWithStock: ProductWithStock = await saleService.getProductByBarcode(
-      barcodeInput.value.trim()
+      barcodeInput.value.trim(),
     )
 
     if (productWithStock && productWithStock.availableStocks) {
@@ -660,7 +678,7 @@ const searchProduct = async () => {
           severity: 'warn',
           summary: 'Produto sem estoque',
           detail: 'Produto encontrado mas sem estoque disponível',
-          life: 3000
+          life: 3000,
         })
       }
     } else {
@@ -668,7 +686,7 @@ const searchProduct = async () => {
         severity: 'warn',
         summary: 'Produto não encontrado',
         detail: 'Nenhum produto encontrado com este código de barras',
-        life: 3000
+        life: 3000,
       })
     }
   } catch {
@@ -676,7 +694,7 @@ const searchProduct = async () => {
       severity: 'error',
       summary: 'Erro',
       detail: 'Erro ao buscar produto',
-      life: 3000
+      life: 3000,
     })
   } finally {
     searchingProduct.value = false
@@ -689,7 +707,7 @@ const confirmSale = async () => {
       severity: 'error',
       summary: 'Erro',
       detail: 'Dados do produto ou estoque não encontrados.',
-      life: 3000
+      life: 3000,
     })
     return
   }
@@ -698,12 +716,11 @@ const confirmSale = async () => {
   const stockId = selectedStock.value.stockId
 
   if (!productId || !stockId) {
-
     toast.add({
       severity: 'error',
       summary: 'Erro',
       detail: 'IDs do produto ou estoque não encontrados.',
-      life: 3000
+      life: 3000,
     })
     return
   }
@@ -716,7 +733,7 @@ const confirmSale = async () => {
         severity: 'error',
         summary: 'Erro',
         detail: 'Usuário não encontrado. Faça login novamente.',
-        life: 3000
+        life: 3000,
       })
       return
     }
@@ -727,9 +744,9 @@ const confirmSale = async () => {
         {
           productId: productId,
           stockId: stockId,
-          quantity: sellQuantity.value
-        }
-      ]
+          quantity: sellQuantity.value,
+        },
+      ],
     }
 
     console.log('Sale data being sent:', saleData)
@@ -743,7 +760,7 @@ const confirmSale = async () => {
       detail: `${sellQuantity.value} unidade(s) de ${
         selectedProduct.value.productName || 'produto'
       } vendida(s) com sucesso!`,
-      life: 3000
+      life: 3000,
     })
 
     emit('saleCompleted')
@@ -754,7 +771,7 @@ const confirmSale = async () => {
       severity: 'error',
       summary: 'Erro',
       detail: 'Erro ao processar venda',
-      life: 3000
+      life: 3000,
     })
   } finally {
     processingSale.value = false
