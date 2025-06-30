@@ -60,7 +60,7 @@ class ExpirationAnalyticsService {
             month: '2-digit',
           })
           label = `${startFormatted} - ${endFormatted}`
-        } catch (error) {
+        } catch {
           label = `Semana ${weekOffset + 1}`
         }
       }
@@ -148,9 +148,9 @@ class ExpirationAnalyticsService {
       let totalQuantityExpiring = 0
 
       for (const stock of allStocks) {
-        const daysUntilExpiration = this.calculateDaysUntilExpiration(stock.expiration_date)
+        const daysUntilExpiration = this.calculateDaysUntilExpiration(stock.expirationDate)
 
-        if (this.isExpiringInWeek(stock.expiration_date, weekRange)) {
+        if (this.isExpiringInWeek(stock.expirationDate, weekRange)) {
           const expiringStock: ExpiringProduct = {
             stock,
             daysUntilExpiration,
@@ -161,7 +161,7 @@ class ExpirationAnalyticsService {
           productsExpiringThisWeek.push(expiringStock)
           totalQuantityExpiring += stock.quantity
 
-          const dateKey = this.formatDateKey(stock.expiration_date)
+          const dateKey = this.formatDateKey(stock.expirationDate)
           if (!expirationByDate.has(dateKey)) {
             expirationByDate.set(dateKey, { products: [], totalQuantity: 0 })
           }
@@ -231,7 +231,7 @@ class ExpirationAnalyticsService {
 
     analytics.productsExpiringThisWeek.forEach((item, index) => {
       const color = colors[index % colors.length]
-      const expDate = new Date(item.stock.expiration_date).toLocaleDateString('pt-BR')
+      const expDate = new Date(item.stock.expirationDate).toLocaleDateString('pt-BR')
 
       labels.push(`${item.stock.product?.name || 'Produto'} (${expDate})`)
       data.push(item.stock.quantity)

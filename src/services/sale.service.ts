@@ -6,23 +6,55 @@ interface SaleItem {
   productId: string
   stockId: string
   quantity: number
-  unitPrice: number
+}
+
+interface SaleItemResponse {
+  id: string
+  sale_id: string
+  product_id: string
+  stock_id: string
+  quantity: number
+  unit_price: number
+  created_at: string
+  updated_at: string
+  product: {
+    id: string
+    barcode: string
+    name: string
+    brand: string
+    category: string
+    cost_price: number
+    base_price: number
+    sales_frequency: number
+    created_at: string
+    updated_at: string
+    min_stock_level: number | null
+  }
+}
+
+interface UserResponse {
+  id: string
+  name: string
+  email: string
+  type: string
+  created_at: string
+  updated_at: string
 }
 
 interface CreateSaleRequest {
   userId: string
   items: SaleItem[]
-  totalValue: number
-  saleDate: Date
 }
 
 interface Sale {
   id: string
   user_id: string
-  sale_date: Date
+  sale_date: string
   total_value: number
-  updated_at: Date
-  items?: SaleItem[]
+  created_at: string
+  updated_at: string
+  user?: UserResponse
+  items?: SaleItemResponse[]
 }
 
 interface SalesAnalytics {
@@ -56,6 +88,7 @@ export const saleService = {
   async getProductByBarcode(barcode: string): Promise<ProductWithStock | null> {
     try {
       const response = await api.get<ProductWithStock>(`/sales/product-by-barcode/${barcode}`)
+      console.log('Product with stock from API:', response.data)
       return response.data
     } catch (error) {
       console.error('Erro ao buscar produto por código de barras:', error)
@@ -65,6 +98,7 @@ export const saleService = {
 
   async createSale(saleData: CreateSaleRequest): Promise<Sale> {
     try {
+      console.log('Sending sale data to API:', saleData)
       const response = await api.post<Sale>('/sales', saleData)
       return response.data
     } catch (error) {
@@ -76,6 +110,7 @@ export const saleService = {
   async getSales(): Promise<Sale[]> {
     try {
       const response = await api.get<Sale[]>('/sales')
+      console.log('Sales data from API:', response.data)
       return response.data
     } catch (error) {
       console.error('Erro ao buscar vendas:', error)
@@ -93,79 +128,152 @@ export const saleService = {
     }
   },
 
-  async getSalesAnalytics(options: {
-    startDate?: string
-    endDate?: string
-  } = {}): Promise<SalesAnalytics> {
+  async getSalesAnalytics(
+    options: {
+      startDate?: string
+      endDate?: string
+    } = {},
+  ): Promise<SalesAnalytics> {
     try {
-      // Get all sales and products data
-      const [salesData, productsData] = await Promise.all([
-        this.getSales(),
-        import('@/services/product.service').then(m => m.productService.getProducts())
-      ])
+      const sales = await this.getSales()
+      console.log('Raw sales for analytics:', sales)
+      console.log('Filter options:', options)
 
-      const sales = salesData
-      const products = productsData.products
-
-      // Filter sales by date range
       let filteredSales = sales
       if (options.startDate || options.endDate) {
-        filteredSales = sales.filter(sale => {
-          const saleDate = new Date(sale.sale_date)
-          if (options.startDate && saleDate < new Date(options.startDate)) return false
-          if (options.endDate && saleDate > new Date(options.endDate)) return false
-          return true
+        filteredSales = sales.filter((sale) => {
+          try {
+            const saleDate = new Date(sale.sale_date)
+
+            // Normaliza as datas para comparação (remove horário)
+            const saleDateOnly = new Date(
+              saleDate.getFullYear(),
+              saleDate.getMonth(),
+              saleDate.getDate(),
+            )
+
+            if (options.startDate) {
+              const startDate = new Date(options.startDate)
+              const startDateOnly = new Date(
+                startDate.getFullYear(),
+                startDate.getMonth(),
+                startDate.getDate(),
+              )
+              if (saleDateOnly < startDateOnly) return false
+            }
+
+            if (options.endDate) {
+              const endDate = new Date(options.endDate)
+              const endDateOnly = new Date(
+                endDate.getFullYear(),
+                endDate.getMonth(),
+                endDate.getDate(),
+              )
+              if (saleDateOnly > endDateOnly) return false
+            }
+
+            return true
+          } catch (error) {
+            console.error('Erro ao processar data da venda:', sale.sale_date, error)
+            return false
+          }
         })
       }
 
-      // Calculate summary metrics
       const totalSales = filteredSales.length
-      const totalRevenue = filteredSales.reduce((sum, sale) => sum + (sale.total_value || 0), 0)
-      const totalItems = filteredSales.reduce((sum, sale) => sum + (sale.items?.length || 0), 0)
+      const totalRevenue = filteredSales.reduce(
+        (sum, sale) => sum + (Number(sale.total_value) || 0),
+        0,
+      )
+      const totalItems = filteredSales.reduce((sum, sale) => {
+        return (
+          sum +
+          (sale.items?.reduce((itemSum, item) => itemSum + (Number(item.quantity) || 0), 0) || 0)
+        )
+      }, 0)
       const averageSaleValue = totalSales > 0 ? totalRevenue / totalSales : 0
 
-      // Calculate top products (mock data for now since we don't have detailed sale items)
-      const productMap = new Map(products.map(p => [p.id, p]))
-      const topProducts = products.slice(0, 5).map(product => ({
-        productId: product.id,
-        productName: product.name,
-        totalQuantity: Math.floor(Math.random() * 50) + 10,
-        totalRevenue: Math.floor(Math.random() * 10000) + 1000,
-        salesCount: Math.floor(Math.random() * 20) + 5,
-      })).sort((a, b) => b.totalRevenue - a.totalRevenue)
+      const productStats = new Map<
+        string,
+        {
+          productId: string
+          productName: string
+          totalQuantity: number
+          totalRevenue: number
+          salesCount: number
+        }
+      >()
 
-      // Calculate sales by day
-      const salesByDayMap = new Map<string, { totalSales: number, totalRevenue: number, salesCount: number }>()
-      filteredSales.forEach(sale => {
+      filteredSales.forEach((sale) => {
+        sale.items?.forEach((item) => {
+          const productId = item.product_id
+          const existing = productStats.get(productId) || {
+            productId,
+            productName: item.product.name,
+            totalQuantity: 0,
+            totalRevenue: 0,
+            salesCount: 0,
+          }
+
+          existing.totalQuantity += Number(item.quantity) || 0
+          existing.totalRevenue += (Number(item.unit_price) || 0) * (Number(item.quantity) || 0)
+          existing.salesCount += 1
+          productStats.set(productId, existing)
+        })
+      })
+
+      const topProducts = Array.from(productStats.values())
+        .sort((a, b) => b.totalRevenue - a.totalRevenue)
+        .slice(0, 10)
+
+      const salesByDayMap = new Map<
+        string,
+        { totalSales: number; totalRevenue: number; salesCount: number }
+      >()
+      filteredSales.forEach((sale) => {
         const date = new Date(sale.sale_date).toISOString().split('T')[0]
-        const existing = salesByDayMap.get(date) || { totalSales: 0, totalRevenue: 0, salesCount: 0 }
-        existing.totalSales += sale.total_value || 0
-        existing.totalRevenue += sale.total_value || 0
+        const existing = salesByDayMap.get(date) || {
+          totalSales: 0,
+          totalRevenue: 0,
+          salesCount: 0,
+        }
+        existing.totalSales += Number(sale.total_value) || 0
+        existing.totalRevenue += Number(sale.total_value) || 0
         existing.salesCount += 1
         salesByDayMap.set(date, existing)
       })
 
-      const salesByDay = Array.from(salesByDayMap.entries()).map(([date, data]) => ({
-        date,
-        ...data
-      })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      const salesByDay = Array.from(salesByDayMap.entries())
+        .map(([date, data]) => ({
+          date,
+          ...data,
+        }))
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
       // Get recent sales
       const recentSales = filteredSales
         .sort((a, b) => new Date(b.sale_date).getTime() - new Date(a.sale_date).getTime())
         .slice(0, 10)
 
-      return {
+      const result = {
         summary: {
           totalSales,
           totalRevenue,
           totalItems,
-          averageSaleValue
+          averageSaleValue,
         },
         topProducts,
         salesByDay,
-        recentSales
+        recentSales,
       }
+
+      console.log('Final analytics result:', result)
+      console.log('Total Revenue:', totalRevenue)
+      console.log('Total Items:', totalItems)
+      console.log('Top Products:', topProducts)
+      console.log('Sales By Day:', salesByDay)
+      console.log('Recent Sales:', recentSales)
+      return result
     } catch (error) {
       console.error('Erro ao calcular analytics de vendas:', error)
       throw error
@@ -192,4 +300,12 @@ export const saleService = {
   },
 }
 
-export type { Sale, SaleItem, CreateSaleRequest, SalesAnalytics, ProductWithStock }
+export type {
+  Sale,
+  SaleItem,
+  SaleItemResponse,
+  UserResponse,
+  CreateSaleRequest,
+  SalesAnalytics,
+  ProductWithStock,
+}

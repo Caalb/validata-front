@@ -1,11 +1,6 @@
 <template>
   <div class="chart-container">
-    <Pie
-      v-if="loaded"
-      :data="chartData"
-      :options="chartOptions"
-      :plugins="plugins"
-    />
+    <Pie v-if="loaded" :data="chartData" :options="chartOptions" :plugins="plugins" />
     <div v-else class="flex items-center justify-center h-64">
       <ProgressSpinner />
     </div>
@@ -22,30 +17,28 @@ import {
   ArcElement,
   CategoryScale,
   type ChartData,
-  type ChartOptions
+  type ChartOptions,
 } from 'chart.js'
 import { Pie } from 'vue-chartjs'
 import ProgressSpinner from 'primevue/progressspinner'
-import { expirationAnalyticsService } from '@/services/expiration-analytics.service'
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
 
 interface Props {
-  weekOffset?: number
+  data?: ChartData<'pie'>
+  title?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  weekOffset: 0
+  title: 'Gráfico de Pizza',
 })
 
 const chartData = ref<ChartData<'pie'>>({
   labels: [],
-  datasets: []
+  datasets: [],
 })
 
 const loaded = ref(false)
-const currentWeekOffset = ref(0)
-const weekLabel = ref('Esta Semana')
 
 const chartOptions = ref<ChartOptions<'pie'>>({
   responsive: true,
@@ -53,12 +46,12 @@ const chartOptions = ref<ChartOptions<'pie'>>({
   plugins: {
     title: {
       display: true,
-      text: 'Produtos Vencendo',
+      text: props.title,
       font: {
         size: 16,
-        weight: 'bold'
+        weight: 'bold',
       },
-      color: '#374151'
+      color: '#374151',
     },
     legend: {
       position: 'bottom',
@@ -66,85 +59,64 @@ const chartOptions = ref<ChartOptions<'pie'>>({
         padding: 20,
         usePointStyle: true,
         font: {
-          size: 12
+          size: 12,
         },
-        color: '#374151'
-      }
+        color: '#374151',
+      },
     },
     tooltip: {
       callbacks: {
-        label: function(context) {
+        label: function (context) {
           const label = context.label || ''
           const value = context.parsed
           const total = context.dataset.data.reduce((sum: number, val: number) => sum + val, 0)
           const percentage = ((value / total) * 100).toFixed(1)
-          return `${label}: ${value} unidades (${percentage}%)`
-        }
+          return `${label}: ${value} (${percentage}%)`
+        },
       },
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
       titleColor: '#ffffff',
       bodyColor: '#ffffff',
       borderColor: 'rgba(255, 255, 255, 0.2)',
-      borderWidth: 1
-    }
+      borderWidth: 1,
+    },
   },
   elements: {
     arc: {
-      borderWidth: 2
-    }
-  }
+      borderWidth: 2,
+    },
+  },
 })
 
-const plugins = [{
-  id: 'customCanvasBackgroundColor',
-  beforeDraw: (chart: ChartJS<'pie'>) => {
-    const { ctx } = chart
-    ctx.save()
-    ctx.globalCompositeOperation = 'destination-over'
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(0, 0, chart.width, chart.height)
-    ctx.restore()
-  }
-}]
+const plugins = [
+  {
+    id: 'customCanvasBackgroundColor',
+    beforeDraw: (chart: ChartJS<'pie'>) => {
+      const { ctx } = chart
+      ctx.save()
+      ctx.globalCompositeOperation = 'destination-over'
+      ctx.fillStyle = '#ffffff'
+      ctx.fillRect(0, 0, chart.width, chart.height)
+      ctx.restore()
+    },
+  },
+]
 
-const updateWeekLabel = (weekOffset: number) => {
-  if (weekOffset === 0) {
-    weekLabel.value = 'Esta Semana'
-  } else if (weekOffset === 1) {
-    weekLabel.value = 'Próxima Semana'
-  } else {
-    weekLabel.value = `Semana ${weekOffset + 1}`
-  }
-  
-  if (chartOptions.value.plugins?.title) {
-    chartOptions.value.plugins.title.text = `Produtos Vencendo (${weekLabel.value})`
-  }
-}
-
-const loadChartData = async (weekOffset: number = 0) => {
-  try {
-    currentWeekOffset.value = weekOffset
-    updateWeekLabel(weekOffset)
-    
-    const data = await expirationAnalyticsService.getPieChartData(weekOffset)
-    chartData.value = data
-    loaded.value = true
-  } catch (error) {
-    console.error('Error loading pie chart data:', error)
+const updateChartData = () => {
+  if (props.data) {
+    chartData.value = props.data
     loaded.value = true
   }
 }
 
-watch(() => props.weekOffset, async (newWeekOffset) => {
-  await loadChartData(newWeekOffset)
-})
+watch(() => props.data, updateChartData, { deep: true })
 
-onMounted(async () => {
-  await loadChartData(props.weekOffset)
+onMounted(() => {
+  updateChartData()
 })
 
 defineExpose({
-  refresh: loadChartData
+  refresh: updateChartData,
 })
 </script>
 

@@ -2,9 +2,11 @@ import type { Product } from './product'
 
 export interface Stock {
   id: string
+  stockId?: string
   productId: string
   quantity: number
-  expiration_date: Date
+  expirationDate: Date
+  sellingPrice?: number
   created_at: Date
   updated_at: Date
   product?: Product

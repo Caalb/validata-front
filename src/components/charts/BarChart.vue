@@ -18,30 +18,32 @@ import {
   CategoryScale,
   LinearScale,
   type ChartData,
-  type ChartOptions
+  type ChartOptions,
 } from 'chart.js'
 import { Bar } from 'vue-chartjs'
 import ProgressSpinner from 'primevue/progressspinner'
-import { expirationAnalyticsService } from '@/services/expiration-analytics.service'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 interface Props {
-  weekOffset?: number
+  data?: ChartData<'bar'>
+  title?: string
+  xAxisLabel?: string
+  yAxisLabel?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  weekOffset: 0
+  title: 'Gráfico de Barras',
+  xAxisLabel: 'Categoria',
+  yAxisLabel: 'Valor',
 })
 
 const chartData = ref<ChartData<'bar'>>({
   labels: [],
-  datasets: []
+  datasets: [],
 })
 
 const loaded = ref(false)
-const currentWeekOffset = ref(0)
-const weekLabel = ref('Esta Semana')
 
 const chartOptions = ref<ChartOptions<'bar'>>({
   responsive: true,
@@ -49,126 +51,104 @@ const chartOptions = ref<ChartOptions<'bar'>>({
   plugins: {
     title: {
       display: true,
-      text: 'Produtos por Data de Validade',
+      text: props.title,
       font: {
         size: 16,
-        weight: 'bold'
+        weight: 'bold',
       },
-      color: '#374151'
+      color: '#374151',
     },
     legend: {
-      display: false
+      display: false,
     },
     tooltip: {
       callbacks: {
-        label: function(context) {
+        label: function (context) {
           const value = context.parsed.y
-          return `${value} ${value === 1 ? 'produto' : 'produtos'}`
-        }
+          return `${value}`
+        },
       },
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
       titleColor: '#ffffff',
       bodyColor: '#ffffff',
       borderColor: 'rgba(255, 255, 255, 0.2)',
-      borderWidth: 1
-    }
+      borderWidth: 1,
+    },
   },
   scales: {
     x: {
       title: {
         display: true,
-        text: 'Data de Validade',
+        text: props.xAxisLabel,
         font: {
           size: 12,
-          weight: 'bold'
+          weight: 'bold',
         },
-        color: '#6B7280'
+        color: '#6B7280',
       },
       grid: {
-        display: false
+        display: false,
       },
       ticks: {
-        color: '#6B7280'
-      }
+        color: '#6B7280',
+      },
     },
     y: {
       title: {
         display: true,
-        text: 'Quantidade de Produtos',
+        text: props.yAxisLabel,
         font: {
           size: 12,
-          weight: 'bold'
+          weight: 'bold',
         },
-        color: '#6B7280'
+        color: '#6B7280',
       },
       beginAtZero: true,
       ticks: {
-        stepSize: 1,
-        color: '#6B7280'
+        color: '#6B7280',
       },
       grid: {
-        color: 'rgba(107, 114, 128, 0.1)'
-      }
-    }
+        color: 'rgba(107, 114, 128, 0.1)',
+      },
+    },
   },
   elements: {
     bar: {
       borderRadius: 4,
-      borderSkipped: false
-    }
-  }
+      borderSkipped: false,
+    },
+  },
 })
 
-const plugins = [{
-  id: 'customCanvasBackgroundColor',
-  beforeDraw: (chart: ChartJS<'bar'>) => {
-    const { ctx } = chart
-    ctx.save()
-    ctx.globalCompositeOperation = 'destination-over'
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(0, 0, chart.width, chart.height)
-    ctx.restore()
-  }
-}]
+const plugins = [
+  {
+    id: 'customCanvasBackgroundColor',
+    beforeDraw: (chart: ChartJS<'bar'>) => {
+      const { ctx } = chart
+      ctx.save()
+      ctx.globalCompositeOperation = 'destination-over'
+      ctx.fillStyle = '#ffffff'
+      ctx.fillRect(0, 0, chart.width, chart.height)
+      ctx.restore()
+    },
+  },
+]
 
-const updateWeekLabel = (weekOffset: number) => {
-  if (weekOffset === 0) {
-    weekLabel.value = 'Esta Semana'
-  } else if (weekOffset === 1) {
-    weekLabel.value = 'Próxima Semana'
-  } else {
-    weekLabel.value = `Semana ${weekOffset + 1}`
-  }
-  
-  if (chartOptions.value.plugins?.title) {
-    chartOptions.value.plugins.title.text = `Produtos por Data de Validade (${weekLabel.value})`
-  }
-}
-
-const loadChartData = async (weekOffset: number = 0) => {
-  try {
-    currentWeekOffset.value = weekOffset
-    updateWeekLabel(weekOffset)
-    
-    const data = await expirationAnalyticsService.getBarChartData(weekOffset)
-    chartData.value = data
-    loaded.value = true
-  } catch (error) {
-    console.error('Error loading bar chart data:', error)
+const updateChartData = () => {
+  if (props.data) {
+    chartData.value = props.data
     loaded.value = true
   }
 }
 
-watch(() => props.weekOffset, async (newWeekOffset) => {
-  await loadChartData(newWeekOffset)
-})
+watch(() => props.data, updateChartData, { deep: true })
 
-onMounted(async () => {
-  await loadChartData(props.weekOffset)
+onMounted(() => {
+  updateChartData()
 })
 
 defineExpose({
-  refresh: loadChartData
+  refresh: updateChartData,
 })
 </script>
 

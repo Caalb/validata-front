@@ -1,3 +1,5 @@
+import type { Stock } from './stock'
+
 export interface Product {
   id: string
   name: string
@@ -9,6 +11,19 @@ export interface Product {
   sales_frequency: number
   created_at: Date
   updated_at: Date
+}
+
+export interface ProductWithStock {
+  productId: string
+  productName: string
+  brand: string
+  category: string
+  basePrice: number
+  basePriceInBRL: number
+  availableStocks: Stock[]
+  hasDiscounts: boolean
+  lowestPrice: number
+  lowestPriceInBRL: number
 }
 
 export interface ProductCreateRequest {

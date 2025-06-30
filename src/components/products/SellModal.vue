@@ -24,7 +24,7 @@
         </button>
 
         <div
-          class="relative bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden"
+          class="relative bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
         >
           <div
             class="absolute inset-0 bg-gradient-to-br from-green-50/80 via-white/90 to-emerald-50/80"
@@ -232,28 +232,101 @@
                     <div
                       class="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white bg-green-500"
                     >
-                      {{ selectedProduct.quantity }}
+                      {{ selectedStock?.quantity || 0 }}
                     </div>
                   </div>
 
                   <div class="flex-1 min-w-0">
                     <h4 class="text-lg font-semibold text-gray-900 truncate">
-                      {{ selectedProduct.product?.name || 'Produto' }}
+                      {{ selectedProduct.productName || 'Produto' }}
                     </h4>
                     <p class="text-sm text-gray-600 mb-1">
-                      {{ selectedProduct.product?.brand || 'Sem marca' }}
+                      {{ selectedProduct.brand || 'Sem marca' }}
                     </p>
                     <div class="flex items-center space-x-4 text-xs text-gray-500">
-                      <span>Código: {{ selectedProduct.product?.barcode || 'N/A' }}</span>
-                      <span :class="getExpirationDateClass(selectedProduct.expiration_date)">
-                        Vence em {{ getDaysUntilExpiration(selectedProduct.expiration_date) }} dias
+                      <span>Código: {{ barcodeInput || 'N/A' }}</span>
+                      <span :class="getExpirationDateClass(selectedStock?.expirationDate || new Date())">
+                        Vence em {{ getDaysUntilExpiration(selectedStock?.expirationDate || new Date()) }} dias
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
 
+              <!-- Seleção de estoque -->
+              <div v-if="availableStocks.length > 1" class="bg-gradient-to-r from-blue-50 to-sky-50 rounded-2xl p-4 border border-blue-200/50 mb-6">
+                <h5 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                  <i class="pi pi-warehouse mr-2 text-blue-500"></i>
+                  Selecionar Estoque
+                </h5>
+
+                <div class="space-y-2 max-h-40 overflow-y-auto">
+                  <div
+                    v-for="stock in availableStocks"
+                    :key="stock.stockId || stock.id"
+                    @click="selectStock(stock)"
+                    :class="[
+                      'p-3 rounded-xl border-2 cursor-pointer transition-all duration-200',
+                      (selectedStock?.stockId || selectedStock?.id) === (stock.stockId || stock.id)
+                        ? 'border-blue-500 bg-blue-100/50'
+                        : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/30'
+                    ]"
+                  >
+                    <div class="flex items-center justify-between">
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                          <div class="w-3 h-3 rounded-full" :class="[
+                            (selectedStock?.stockId || selectedStock?.id) === (stock.stockId || stock.id) ? 'bg-blue-500' : 'bg-gray-300'
+                          ]"></div>
+                          <span class="text-sm font-medium text-gray-900">
+                            Lote: {{ stock.id?.slice(-6) || 'N/A' }}
+                          </span>
+                          <span class="text-xs px-2 py-1 rounded-full" :class="[
+                            stock.quantity > 10 ? 'bg-green-100 text-green-800' :
+                            stock.quantity > 5 ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          ]">
+                            {{ stock.quantity }} unid.
+                          </span>
+                        </div>
+                        <div class="mt-1 text-xs text-gray-600">
+                          Vence em {{ getDaysUntilExpiration(stock.expirationDate) }} dias
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div class="space-y-4 mb-6">
+                <!-- Seção de preços -->
+                <div class="bg-gradient-to-r from-blue-50 to-sky-50 rounded-2xl p-4 border border-blue-200/50">
+                  <h5 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                    <i class="pi pi-dollar mr-2 text-blue-500"></i>
+                    Preço de Venda
+                  </h5>
+
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                      <p class="text-xs text-gray-600 mb-1">Preço de Custo</p>
+                      <p class="text-lg font-semibold text-gray-800">
+                        R$ {{ (costPrice / 100).toFixed(2) }}
+                      </p>
+                    </div>
+
+                    <div class="text-center">
+                      <p class="text-xs text-gray-600 mb-1">Preço de Venda</p>
+                      <div class="text-2xl font-bold text-green-600">
+                        <p class="w-full text-center text-2xl font-bold text-green-600 border-2 border-green-200 rounded-lg p-2">
+                          {{ (salePrice / 100).toFixed(2) }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+
                 <div>
                   <label class="block text-xs md:text-sm font-semibold text-gray-700 mb-2">
                     <i class="pi pi-shopping-bag mr-2 text-green-500"></i>
@@ -272,7 +345,7 @@
                       v-model="sellQuantityString"
                       type="number"
                       :min="1"
-                      :max="selectedProduct.quantity"
+                      :max="selectedStock?.quantity || 1"
                       class="flex-1 text-center text-lg font-semibold py-2 rounded-xl border-2 border-green-200/50 bg-white/50 backdrop-blur-sm focus:border-green-300 focus:bg-white/80 transition-all duration-300"
                       @input="updateSellQuantity"
                     />
@@ -280,14 +353,47 @@
                       icon="pi pi-plus"
                       size="small"
                       outlined
-                      :disabled="sellQuantity >= selectedProduct.quantity"
-                      @click="sellQuantity = Math.min(selectedProduct.quantity, sellQuantity + 1)"
+                      :disabled="sellQuantity >= (selectedStock?.quantity || 1)"
+                      @click="sellQuantity = Math.min(selectedStock?.quantity || 1, sellQuantity + 1)"
                       class="w-10 h-10 border-2 border-green-300 text-green-600 hover:bg-green-50 rounded-xl"
                     />
                   </div>
                   <small class="text-green-600 text-xs mt-1 block">
-                    Estoque disponível: {{ selectedProduct.quantity }} unidades
+                    Estoque disponível: {{ selectedStock?.quantity || 0 }} unidades
                   </small>
+                </div>
+
+                <!-- Total da venda -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 border border-green-200/50">
+                  <h5 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                    <i class="pi pi-calculator mr-2 text-green-500"></i>
+                    Total da Venda
+                  </h5>
+
+                  <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center">
+                      <p class="text-xs text-gray-600 mb-1">Quantidade</p>
+                      <p class="text-lg font-semibold text-gray-800">
+                        {{ sellQuantity }}x
+                      </p>
+                    </div>
+
+                    <div class="text-center">
+                      <p class="text-xs text-gray-600 mb-1">Preço Unitário</p>
+                      <p class="text-lg font-semibold text-gray-800">
+                        R$ {{ (salePrice / 100).toFixed(2) }}
+                      </p>
+                    </div>
+
+                    <div class="text-center">
+                      <p class="text-xs text-gray-600 mb-1">Total</p>
+                      <p class="text-2xl font-bold text-green-600">
+                        R$ {{ totalAmount.toFixed(2) }}
+                      </p>
+                    </div>
+                  </div>
+
+
                 </div>
               </div>
 
@@ -325,6 +431,7 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Quagga, { type QuaggaJSResultObject } from '@ericblade/quagga2'
 import type { Stock } from '@/types/stock'
+import type { ProductWithStock } from '@/types/product'
 import { saleService } from '@/services/sale.service'
 import { auth } from '@/lib/auth'
 
@@ -344,7 +451,9 @@ const toast = useToast()
 
 const scannerMode = ref(true)
 const manualMode = ref(false)
-const selectedProduct = ref<Stock | null>(null)
+const selectedProduct = ref<ProductWithStock | null>(null)
+const selectedStock = ref<Stock | null>(null)
+const availableStocks = ref<Stock[]>([])
 const showBarcodeScanner = ref(false)
 
 const barcodeInput = ref('')
@@ -352,6 +461,8 @@ const sellQuantity = ref(1)
 
 const searchingProduct = ref(false)
 const processingSale = ref(false)
+
+const salePrice = ref(0)
 
 const sellQuantityString = computed({
   get: () => sellQuantity.value.toString(),
@@ -361,10 +472,30 @@ const sellQuantityString = computed({
   },
 })
 
+
+
+
+
+const costPrice = computed(() => 0)
+
+
+
+const totalAmount = computed(() => {
+    return (salePrice.value / 100) * sellQuantity.value
+})
+
+
+
+
 const updateSellQuantity = (event: Event) => {
   const target = event.target as HTMLInputElement
   const value = parseInt(target.value) || 1
-  sellQuantity.value = Math.max(1, Math.min(selectedProduct.value?.quantity || 999, value))
+  sellQuantity.value = Math.max(1, Math.min(selectedStock.value?.quantity || 999, value))
+}
+
+const selectStock = (stock: Stock) => {
+  selectedStock.value = stock
+  sellQuantity.value = 1
 }
 
 const switchToManualMode = () => {
@@ -504,19 +635,23 @@ const searchProduct = async () => {
 
   searchingProduct.value = true
   try {
-    const productWithStock = await saleService.getProductByBarcode(barcodeInput.value.trim())
+    const productWithStock: ProductWithStock = await saleService.getProductByBarcode(
+      barcodeInput.value.trim()
+    )
 
     if (productWithStock && productWithStock.availableStocks) {
-      const availableStocks = productWithStock.availableStocks.filter((stock) => stock.quantity > 0)
+      const stocks = productWithStock.availableStocks.filter((stock) => stock.quantity > 0)
 
-      if (availableStocks.length > 0) {
-        const closestExpirationStock = availableStocks.reduce((closest, current) => {
-          const closestDays = getDaysUntilExpiration(closest.expiration_date)
-          const currentDays = getDaysUntilExpiration(current.expiration_date)
+      if (stocks.length > 0) {
+        const closestExpirationStock = stocks.reduce((closest, current) => {
+          const closestDays = getDaysUntilExpiration(closest.expirationDate)
+          const currentDays = getDaysUntilExpiration(current.expirationDate)
           return currentDays < closestDays ? current : closest
         })
 
-        selectedProduct.value = { ...closestExpirationStock, product: productWithStock }
+        selectedProduct.value = productWithStock
+        availableStocks.value = productWithStock.availableStocks
+        selectedStock.value = closestExpirationStock
         sellQuantity.value = 1
         scannerMode.value = false
         manualMode.value = false
@@ -525,7 +660,7 @@ const searchProduct = async () => {
           severity: 'warn',
           summary: 'Produto sem estoque',
           detail: 'Produto encontrado mas sem estoque disponível',
-          life: 3000,
+          life: 3000
         })
       }
     } else {
@@ -533,7 +668,7 @@ const searchProduct = async () => {
         severity: 'warn',
         summary: 'Produto não encontrado',
         detail: 'Nenhum produto encontrado com este código de barras',
-        life: 3000,
+        life: 3000
       })
     }
   } catch {
@@ -541,7 +676,7 @@ const searchProduct = async () => {
       severity: 'error',
       summary: 'Erro',
       detail: 'Erro ao buscar produto',
-      life: 3000,
+      life: 3000
     })
   } finally {
     searchingProduct.value = false
@@ -549,7 +684,29 @@ const searchProduct = async () => {
 }
 
 const confirmSale = async () => {
-  if (!selectedProduct.value) return
+  if (!selectedProduct.value || !selectedStock.value) {
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'Dados do produto ou estoque não encontrados.',
+      life: 3000
+    })
+    return
+  }
+
+  const productId = selectedProduct.value.productId
+  const stockId = selectedStock.value.stockId
+
+  if (!productId || !stockId) {
+
+    toast.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: 'IDs do produto ou estoque não encontrados.',
+      life: 3000
+    })
+    return
+  }
 
   processingSale.value = true
   try {
@@ -559,7 +716,7 @@ const confirmSale = async () => {
         severity: 'error',
         summary: 'Erro',
         detail: 'Usuário não encontrado. Faça login novamente.',
-        life: 3000,
+        life: 3000
       })
       return
     }
@@ -568,23 +725,25 @@ const confirmSale = async () => {
       userId: user.id,
       items: [
         {
-          productId: selectedProduct.value.productId,
-          stockId: selectedProduct.value.id,
-          quantity: sellQuantity.value,
-          unitPrice: (selectedProduct.value.product?.base_price || 0) / 100,
-        },
-      ],
-      totalValue: ((selectedProduct.value.product?.base_price || 0) / 100) * sellQuantity.value,
-      saleDate: new Date(),
+          productId: productId,
+          stockId: stockId,
+          quantity: sellQuantity.value
+        }
+      ]
     }
+
+    console.log('Sale data being sent:', saleData)
+    console.log('Selected stock:', selectedStock.value)
 
     await saleService.createSale(saleData)
 
     toast.add({
       severity: 'success',
       summary: 'Venda realizada',
-      detail: `${sellQuantity.value} unidade(s) de ${selectedProduct.value.product?.name || 'produto'} vendida(s) com sucesso!`,
-      life: 3000,
+      detail: `${sellQuantity.value} unidade(s) de ${
+        selectedProduct.value.productName || 'produto'
+      } vendida(s) com sucesso!`,
+      life: 3000
     })
 
     emit('saleCompleted')
@@ -595,7 +754,7 @@ const confirmSale = async () => {
       severity: 'error',
       summary: 'Erro',
       detail: 'Erro ao processar venda',
-      life: 3000,
+      life: 3000
     })
   } finally {
     processingSale.value = false
@@ -607,6 +766,8 @@ const resetModal = () => {
   scannerMode.value = true
   manualMode.value = false
   selectedProduct.value = null
+  selectedStock.value = null
+  availableStocks.value = []
   barcodeInput.value = ''
   sellQuantity.value = 1
   showBarcodeScanner.value = false
@@ -634,6 +795,12 @@ const getExpirationDateClass = (date: string | Date) => {
   }
   return 'text-green-600'
 }
+
+watch(selectedStock, (newStock) => {
+  if (newStock) {
+    salePrice.value = newStock.sellingPrice || 0
+  }
+})
 
 watch(
   () => props.show,

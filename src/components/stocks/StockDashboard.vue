@@ -2,7 +2,9 @@
   <div class="relative">
     <!-- Background gradients -->
     <div class="absolute top-0 right-1/4 w-64 h-64 bg-primary-100/20 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 left-1/4 w-48 h-48 bg-secondary-100/15 rounded-full blur-2xl"></div>
+    <div
+      class="absolute bottom-0 left-1/4 w-48 h-48 bg-secondary-100/15 rounded-full blur-2xl"
+    ></div>
 
     <div class="relative z-10">
       <!-- Header -->
@@ -13,7 +15,7 @@
             Visão geral do estoque e análise de validades
           </p>
         </div>
-        
+
         <div class="flex gap-2">
           <Button
             @click="loadStocks"
@@ -26,11 +28,15 @@
       </div>
 
       <!-- Filters -->
-      <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-white/20 shadow-lg mb-6">
+      <div
+        class="bg-white/60 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-white/20 shadow-lg mb-6"
+      >
         <div class="flex flex-wrap gap-4 items-center">
           <!-- Search -->
           <div class="relative flex-1 min-w-64">
-            <i class="pi pi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <i
+              class="pi pi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            ></i>
             <input
               v-model="filters.search"
               type="text"
@@ -156,16 +162,20 @@
         <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">Produtos Vencendo Esta Semana</h3>
           <div class="h-64">
-            <PieChart :weekOffset="0" />
+            <canvas ref="expirationChart"></canvas>
           </div>
         </div>
       </div>
 
       <!-- Filtered Stocks Table -->
-      <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-white/20 shadow-lg">
+      <div
+        class="bg-white/60 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-white/20 shadow-lg"
+      >
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold text-gray-900">Lotes Filtrados</h3>
-          <div class="flex items-center gap-2 text-sm text-gray-600 bg-white/50 px-3 py-2 rounded-lg">
+          <div
+            class="flex items-center gap-2 text-sm text-gray-600 bg-white/50 px-3 py-2 rounded-lg"
+          >
             <i class="pi pi-info-circle"></i>
             {{ filteredStocks.length }} de {{ allStocks.length }} lotes
           </div>
@@ -220,15 +230,15 @@
               </template>
             </Column>
 
-            <Column field="expiration_date" header="Validade" sortable>
+            <Column field="expirationDate" header="Validade" sortable>
               <template #body="{ data }">
                 <div class="text-center">
                   <p class="font-medium text-gray-900">
-                    {{ formatDate(data.expiration_date) }}
+                    {{ formatDate(data.expirationDate) }}
                   </p>
                   <Badge
-                    :value="getExpirationStatus(data.expiration_date).label"
-                    :severity="getExpirationStatus(data.expiration_date).severity"
+                    :value="getExpirationStatus(data.expirationDate).label"
+                    :severity="getExpirationStatus(data.expirationDate).severity"
                     class="mt-1 px-2 py-1 rounded-full text-xs font-semibold"
                   />
                 </div>
@@ -248,8 +258,8 @@
         <!-- Pagination -->
         <div class="flex justify-between items-center mt-4">
           <div class="text-sm text-gray-600">
-            Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a 
-            {{ Math.min(currentPage * itemsPerPage, filteredStocks.length) }} 
+            Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
+            {{ Math.min(currentPage * itemsPerPage, filteredStocks.length) }}
             de {{ filteredStocks.length }} lotes
           </div>
           <Paginator
@@ -274,11 +284,10 @@ import Dropdown from 'primevue/dropdown'
 import Button from 'primevue/button'
 import Badge from 'primevue/badge'
 import Paginator from 'primevue/paginator'
-import PieChart from '@/components/charts/PieChart.vue'
-import BarChart from '@/components/charts/BarChart.vue'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, type ChartConfiguration } from 'chart.js'
 import type { Stock } from '@/types/stock'
 import { stockService } from '@/services/stock.service'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, type ChartConfiguration } from 'chart.js'
+import { expirationAnalyticsService } from '@/services/expiration-analytics.service'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -291,6 +300,8 @@ const itemsPerPage = ref(10)
 const currentPage = ref(1)
 const categoryChart = ref<HTMLCanvasElement>()
 const categoryChartInstance = ref<ChartJS<'pie'>>()
+const expirationChart = ref<HTMLCanvasElement>()
+const expirationChartInstance = ref<ChartJS<'pie'>>()
 
 // Filters
 const filters = ref({
@@ -301,7 +312,7 @@ const filters = ref({
 })
 
 // Filter options
-const categoryOptions = ref([
+const categoryOptions = ref<Array<{ label: string; value: string | null }>>([
   { label: 'Todas as categorias', value: null },
 ])
 
@@ -328,17 +339,18 @@ const filteredStocks = computed(() => {
   // Search filter
   if (filters.value.search) {
     const search = filters.value.search.toLowerCase()
-    filtered = filtered.filter(stock =>
-      stock.product?.name?.toLowerCase().includes(search) ||
-      stock.product?.brand?.toLowerCase().includes(search) ||
-      stock.product?.category?.toLowerCase().includes(search) ||
-      stock.product?.barcode?.includes(search)
+    filtered = filtered.filter(
+      (stock) =>
+        stock.product?.name?.toLowerCase().includes(search) ||
+        stock.product?.brand?.toLowerCase().includes(search) ||
+        stock.product?.category?.toLowerCase().includes(search) ||
+        stock.product?.barcode?.includes(search),
     )
   }
 
   // Category filter
   if (filters.value.category) {
-    filtered = filtered.filter(stock => stock.product?.category === filters.value.category)
+    filtered = filtered.filter((stock) => stock.product?.category === filters.value.category)
   }
 
   // Expiration filter
@@ -346,8 +358,8 @@ const filteredStocks = computed(() => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    filtered = filtered.filter(stock => {
-      const expDate = new Date(stock.expiration_date)
+    filtered = filtered.filter((stock) => {
+      const expDate = new Date(stock.expirationDate)
       expDate.setHours(0, 0, 0, 0)
       const diffDays = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
@@ -370,7 +382,7 @@ const filteredStocks = computed(() => {
 
   // Stock level filter
   if (filters.value.stockLevel) {
-    filtered = filtered.filter(stock => {
+    filtered = filtered.filter((stock) => {
       switch (filters.value.stockLevel) {
         case 'low':
           return stock.quantity <= 5
@@ -396,21 +408,20 @@ const paginatedStocks = computed(() => {
 const summary = computed(() => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-  
+
   const oneWeekFromNow = new Date(today)
   oneWeekFromNow.setDate(today.getDate() + 7)
 
   return {
     totalBatches: allStocks.value.length,
     totalQuantity: allStocks.value.reduce((sum, stock) => sum + stock.quantity, 0),
-    expiringThisWeek: allStocks.value.filter(stock => {
-      const expDate = new Date(stock.expiration_date)
+    expiringThisWeek: allStocks.value.filter((stock) => {
+      const expDate = new Date(stock.expirationDate)
       return expDate >= today && expDate <= oneWeekFromNow
     }).length,
-    lowStock: allStocks.value.filter(stock => stock.quantity <= 5).length,
+    lowStock: allStocks.value.filter((stock) => stock.quantity <= 5).length,
   }
 })
-
 
 // Methods
 const loadStocks = async () => {
@@ -418,17 +429,20 @@ const loadStocks = async () => {
   try {
     const response = await stockService.getStocks()
     allStocks.value = response.stocks
-    
+
     // Update category options
-    const categories = new Set(allStocks.value.map(stock => stock.product?.category).filter(Boolean))
+    const categories = new Set(
+      allStocks.value.map((stock) => stock.product?.category).filter(Boolean),
+    )
     categoryOptions.value = [
       { label: 'Todas as categorias', value: null },
-      ...Array.from(categories).map(cat => ({ label: cat!, value: cat! }))
-    ] as any
-    
-    // Update category chart
+      ...Array.from(categories).map((cat) => ({ label: cat!, value: cat! })),
+    ]
+
+    // Update charts
     await nextTick()
     updateCategoryChart()
+    updateExpirationChart()
   } catch (error) {
     console.error('Erro ao carregar estoque:', error)
   } finally {
@@ -438,24 +452,24 @@ const loadStocks = async () => {
 
 const updateCategoryChart = () => {
   if (!categoryChart.value) return
-  
+
   // Destroy existing chart
   if (categoryChartInstance.value) {
     categoryChartInstance.value.destroy()
   }
-  
+
   // Calculate category data
   const categoryMap = new Map<string, number>()
-  filteredStocks.value.forEach(stock => {
+  filteredStocks.value.forEach((stock) => {
     const category = stock.product?.category || 'Sem categoria'
     categoryMap.set(category, (categoryMap.get(category) || 0) + stock.quantity)
   })
 
   const labels = Array.from(categoryMap.keys())
   const data = Array.from(categoryMap.values())
-  
+
   if (labels.length === 0) return
-  
+
   const colors = [
     'rgba(255, 99, 132, 0.8)',
     'rgba(54, 162, 235, 0.8)',
@@ -469,12 +483,14 @@ const updateCategoryChart = () => {
     type: 'pie',
     data: {
       labels,
-      datasets: [{
-        data,
-        backgroundColor: colors.slice(0, labels.length),
-        borderColor: colors.slice(0, labels.length).map(color => color.replace('0.8', '1')),
-        borderWidth: 2,
-      }]
+      datasets: [
+        {
+          data,
+          backgroundColor: colors.slice(0, labels.length),
+          borderColor: colors.slice(0, labels.length).map((color) => color.replace('0.8', '1')),
+          borderWidth: 2,
+        },
+      ],
     },
     options: {
       responsive: true,
@@ -486,26 +502,94 @@ const updateCategoryChart = () => {
             padding: 20,
             usePointStyle: true,
             font: {
-              size: 12
-            }
-          }
+              size: 12,
+            },
+          },
         },
         tooltip: {
           callbacks: {
-            label: function(context) {
+            label: function (context) {
               const label = context.label || ''
               const value = context.parsed
               const total = context.dataset.data.reduce((sum: number, val: number) => sum + val, 0)
               const percentage = ((value / total) * 100).toFixed(1)
               return `${label}: ${value} unidades (${percentage}%)`
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   }
 
   categoryChartInstance.value = new ChartJS(categoryChart.value, config)
+}
+
+const updateExpirationChart = async () => {
+  if (!expirationChart.value) return
+
+  // Destroy existing chart
+  if (expirationChartInstance.value) {
+    expirationChartInstance.value.destroy()
+  }
+
+  try {
+    // Get expiration data for this week
+    const pieChartData = await expirationAnalyticsService.getPieChartData(0)
+
+    if (pieChartData.labels.length === 0) {
+      // No data to show
+      return
+    }
+
+    const config: ChartConfiguration<'pie'> = {
+      type: 'pie',
+      data: {
+        labels: pieChartData.labels,
+        datasets: [
+          {
+            data: pieChartData.datasets[0].data,
+            backgroundColor: pieChartData.datasets[0].backgroundColor,
+            borderColor: pieChartData.datasets[0].borderColor,
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20,
+              usePointStyle: true,
+              font: {
+                size: 12,
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const label = context.label || ''
+                const value = context.parsed
+                const total = context.dataset.data.reduce(
+                  (sum: number, val: number) => sum + val,
+                  0,
+                )
+                const percentage = ((value / total) * 100).toFixed(1)
+                return `${label}: ${value} unidades (${percentage}%)`
+              },
+            },
+          },
+        },
+      },
+    }
+
+    expirationChartInstance.value = new ChartJS(expirationChart.value, config)
+  } catch (error) {
+    console.error('Erro ao atualizar gráfico de expiração:', error)
+  }
 }
 
 const clearFilters = () => {
@@ -517,7 +601,7 @@ const clearFilters = () => {
   }
 }
 
-const onPageChange = (event: any) => {
+const onPageChange = (event: { first: number; page: number }) => {
   first.value = event.first
   currentPage.value = event.page + 1
 }
@@ -528,10 +612,10 @@ const formatDate = (date: string | Date): string => {
 
 const getCategorySeverity = (category?: string): string => {
   const severityMap: Record<string, string> = {
-    'Alimentos': 'success',
-    'Bebidas': 'info',
-    'Limpeza': 'warning',
-    'Higiene': 'help',
+    Alimentos: 'success',
+    Bebidas: 'info',
+    Limpeza: 'warning',
+    Higiene: 'help',
   }
   return severityMap[category || ''] || 'secondary'
 }
@@ -545,10 +629,10 @@ const getQuantityClass = (quantity: number): string => {
 const getExpirationStatus = (date: string | Date) => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-  
+
   const expDate = new Date(date)
   expDate.setHours(0, 0, 0, 0)
-  
+
   const diffDays = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
   if (diffDays < 0) {
@@ -565,15 +649,24 @@ const getExpirationStatus = (date: string | Date) => {
 }
 
 // Watchers
-watch(() => filters.value, () => {
-  currentPage.value = 1
-  first.value = 0
-  updateCategoryChart()
-}, { deep: true })
+watch(
+  () => filters.value,
+  () => {
+    currentPage.value = 1
+    first.value = 0
+    updateCategoryChart()
+  },
+  { deep: true },
+)
 
-watch(() => allStocks.value, () => {
-  updateCategoryChart()
-}, { deep: true })
+watch(
+  () => allStocks.value,
+  () => {
+    updateCategoryChart()
+    updateExpirationChart()
+  },
+  { deep: true },
+)
 
 // Lifecycle
 onMounted(() => {
